@@ -179,25 +179,24 @@
 
 <script>
 /* ====================== الثوابت المطلوبة ====================== */
-const WORKER_BASE = 'https://<YOUR-WORKER>.workers.dev'; // بدون سلاش أخير
+const WORKER_BASE = 'https://keywords-tool.anasshopify88.workers.dev'; // غيّرها لاحقاً إلى https://keywords.anasrashed.com إذا ربطت الدومين
 const MAX_COMPETITORS = 3;
 const DEFAULT_MAX_PAGES = 45;
 const CONCURRENCY = 4;
 const PAYMENT_LINK = 'https://anasrashed.com/azqRabz'; // Checkout سلة
 const RETURN_PARAM = 'paid';
 const RETURN_VALUE = '1';
-const ACCESS_CODE_SHA256 = [/* بصمات أكواد وصول اختيارية (hex lowercase) */];
+const ACCESS_CODE_SHA256 = []; // أكواد اختيارية
 
 /* ====================== تهيئة واجهة ====================== */
 const el = sel => document.querySelector(sel);
-const els = sel => Array.from(document.querySelectorAll(sel));
 const $c1 = el('#c1'), $c2 = el('#c2'), $c3 = el('#c3');
 const $maxPages = el('#maxPages'), $form = el('#form');
 const $progress = el('#progress'), $results = el('#results'), $found = el('#foundBadge');
 const $payBtn = el('#payBtn'), $dlCSV = el('#dlCSV'), $dlMD = el('#dlMD');
 const $activate = el('#activateBtn'), $codeInput = el('#codeInput');
 const $themeToggle = el('#themeToggle');
-const $backBtn = el('#backBtn'), $homeBtn = el('#homeBtn');
+const $backBtn = el('#backBtn');
 
 document.documentElement.setAttribute('data-theme', (localStorage.getItem('ck_theme') || 'dark'));
 $themeToggle.checked = (localStorage.getItem('ck_theme') === 'light');
@@ -232,7 +231,7 @@ function byScoreDesc(a,b){ return b.score - a.score; }
 function toCSV(rows){
   return rows.map(r => r.map(v => {
     const s = (v==null?'':String(v));
-    return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
   }).join(',')).join('\n');
 }
 function download(name, mime, data){
@@ -260,7 +259,7 @@ const AR_STOPWORDS = new Set([
   "الى","ألا","الا","ألا","الا","ذلك","هنا","هناك","منذ","ضمن","جدا","قد","قد","لقد","تم","تمت","كما",
   "أكثر","أقل","بشكل","طريقة","مجرد","أيضا","ربما","يمكن","لازال","لا زال","لايزال","لا يزال","او","أو"
 ]);
-const AR_DIAC = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g; // التشكيل
+const AR_DIAC = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g;
 const AR_TATWEEL = /\u0640/g;
 
 function normalizeArabic(s){
@@ -271,13 +270,12 @@ function normalizeArabic(s){
     .replace(/ى/g, 'ي')
     .replace(/ؤ/g, 'و')
     .replace(/ئ/g, 'ي')
-    .replace(/ة/g, 'ه') // توحيد التاء المربوطة
+    .replace(/ة/g, 'ه')
     .replace(/[^\p{Script=Arabic}\p{Letter}\p{Number}\s\-_/]+/gu, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
 function tokenize(s){
-  // نقبل العربية + أحرف/أرقام لاتينية ضمنياً (لـ slug/علامات تجارية)
   return s
     .split(/\s+/)
     .map(t => t.replace(/^[\W_]+|[\W_]+$/g,''))
@@ -288,7 +286,6 @@ function ngrams(tokens, nmin=1, nmax=5){
   for(let n=nmin;n<=nmax;n++){
     for(let i=0;i<=tokens.length - n;i++){
       const g = tokens.slice(i,i+n);
-      // تجاهل n-gram كلها توقف أو قصيرة جداً
       if (g.every(t => AR_STOPWORDS.has(t) || t.length<2)) continue;
       out.push(g.join(' '));
     }
@@ -298,7 +295,6 @@ function ngrams(tokens, nmin=1, nmax=5){
 
 /* ====================== تحليل موضعي TF-IDF ====================== */
 function scoreEntry(baseTF, idf, flags){
-  // أوزان موضعية
   const wTitle = flags.in_title ? 3.0 : 0;
   const wH1   = flags.in_h1    ? 2.0 : 0;
   const wSlug = flags.in_slug  ? 1.5 : 0;
@@ -312,10 +308,8 @@ function canonicalizeInput(v){
   v = v.trim();
   if (!v) return '';
   try{
-    // إن لم يبدأ ببروتوكول، نفترض https://
     if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
     const url = new URL(v);
-    // إن لم يكن رابط خريطة موقع، نحوله إلى /sitemap.xml
     if (!/\.xml(\.gz)?$/i.test(url.pathname)){
       url.pathname = '/sitemap.xml';
     }
@@ -377,7 +371,6 @@ function pageToFields(p){
   const tok = tokenize(allText);
   const grams = ngrams(tok, 1, 5);
 
-  // مجموعات خاصة لكل موضع لرفع الأوزان
   const tTok = ngrams(tokenize(title), 1, 5);
   const hTok = ngrams(tokenize(h1s), 1, 5);
   const sTok = ngrams(tokenize(slug), 1, 5);
@@ -396,15 +389,13 @@ function pageToFields(p){
 }
 
 function aggregate(pages){
-  // DF, صفحات، عينات
   const DF = new Map();
   const TF = new Map();
-  const FLAGS = new Map(); // keyword -> {in_title,in_h1,in_slug,in_anchor}
-  const SAMPLES = new Map(); // keyword -> Set(url)
+  const FLAGS = new Map();
+  const SAMPLES = new Map();
   for(const pg of pages){
     if (!pg || !pg.ok) continue;
     const {tf, sets} = pageToFields(pg);
-    // DF
     for(const k of tf.keys()){
       DF.set(k, (DF.get(k)||0) + 1);
       TF.set(k, (TF.get(k)||0) + tf.get(k));
@@ -438,13 +429,12 @@ function aggregate(pages){
       sample_urls: Array.from(SAMPLES.get(k) || [])
     });
   }
-  // دمج المتشابهات بعد التطبيع تمّ ضمن خطوط التطبيع نفسها، لذا يكفي إزالة التكرار
   out.sort(byScoreDesc);
   return out;
 }
 
 /* ====================== عرض النتائج ====================== */
-let ALL_RESULTS = []; // كل العبارات لكامل المنافسين
+let ALL_RESULTS = [];
 function render(list){
   const paid = (localStorage.getItem('ck_paid') === '1');
   $dlCSV.classList.toggle('hide', !paid);
@@ -489,7 +479,6 @@ function buildCSVRows(items){
 }
 
 function buildMarkdown(items){
-  // تجميع بسيط حسب أول كلمة كبوابة موضوعية
   const groups = new Map();
   for(const r of items){
     const head = r.keyword.split(' ')[0] || r.keyword;
@@ -576,7 +565,7 @@ $form.addEventListener('submit', async (e)=>{
     $progress.textContent = `جاري جمع الصفحات… ${d} / ${total}`;
   });
 
-  // 3) تحويل إلى كلمات مفتاحية وترتيب
+  // 3) تحليل وترتيب
   $progress.textContent = 'جاري التحليل اللغوي…';
   await sleep(50);
   const aggr = aggregate(pages);
@@ -584,8 +573,6 @@ $form.addEventListener('submit', async (e)=>{
   render(ALL_RESULTS);
   $progress.textContent = 'اكتمل التحليل.';
 });
-
-/* ====================== انتهى ====================== */
 </script>
 </body>
 </html>
