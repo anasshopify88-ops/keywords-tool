@@ -6,112 +6,61 @@
 <title>اعرف الكلمات المفتاحية الخاصة بمنافسيك</title>
 <style>
   :root{
-    --bg: #0b0c0f;
-    --card:#12141a;
-    --text:#e9eef6;
-    --muted:#a9b3c1;
-    --accent:#3b82f6;
-    --ok:#16a34a;
-    --warn:#f59e0b;
-    --error:#ef4444;
-    --border: #222733;
-    --shadow: 0 6px 24px rgba(0,0,0,.25);
+    --bg:#0b0c0f;--card:#12141a;--text:#e9eef6;--muted:#a9b3c1;--accent:#3b82f6;
+    --ok:#16a34a;--warn:#f59e0b;--error:#ef4444;--border:#222733;--shadow:0 6px 24px rgba(0,0,0,.25)
   }
   :root[data-theme="light"]{
-    --bg:#f7f8fb;
-    --card:#ffffff;
-    --text:#0c1424;
-    --muted:#5b6472;
-    --accent:#2563eb;
-    --ok:#15803d;
-    --warn:#d97706;
-    --error:#dc2626;
-    --border:#e6e9f2;
-    --shadow: 0 6px 16px rgba(0,0,0,.08);
+    --bg:#f7f8fb;--card:#fff;--text:#0c1424;--muted:#5b6472;--accent:#2563eb;
+    --ok:#15803d;--warn:#d97706;--error:#dc2626;--border:#e6e9f2;--shadow:0 6px 16px rgba(0,0,0,.08)
   }
   html,body{height:100%}
-  body{
-    margin:0;
-    font-family: system-ui, Arial, Helvetica, sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    -webkit-font-smoothing:antialiased;
-    line-height:1.6;
-  }
+  body{margin:0;font-family:system-ui,Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6}
   .wrap{max-width:1100px;margin:0 auto;padding:20px 16px 80px}
-  header{
-    display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:18px
-  }
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:8px}
   .actions{display:flex;gap:8px}
-  .btn{
-    border:1px solid var(--border);background:var(--card);color:var(--text);
-    padding:8px 14px;border-radius:10px;cursor:pointer;box-shadow:var(--shadow);
-  }
-  .btn:hover{border-color:var(--accent)}
-  .btn.primary{background:var(--accent);color:#fff;border-color:transparent}
-  .btn.ghost{background:transparent}
+  .btn{border:1px solid var(--border);background:var(--card);color:var(--text);padding:8px 14px;border-radius:10px;cursor:pointer;box-shadow:var(--shadow)}
+  .btn:hover{border-color:var(--accent)} .btn.primary{background:var(--accent);color:#fff;border-color:transparent}
   .titleRow{display:flex;align-items:center;gap:14px}
-  .owner{
-    width:64px;height:64px;border-radius:9999px;object-fit:cover;border:1px solid var(--border)
-  }
+  .owner{width:64px;height:64px;border-radius:9999px;object-fit:cover;border:1px solid var(--border)}
   h1{margin:0;font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:.2px}
   .sub{margin-top:4px;color:var(--muted);font-size:13px}
-  .toolbar{display:flex;gap:8px;align-items:center}
   .switch{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
-  .card{
-    background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 14px;box-shadow:var(--shadow)
-  }
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 14px;box-shadow:var(--shadow)}
   .grid{display:grid;grid-template-columns:1fr;gap:12px}
   .domainRow{display:flex;gap:10px}
-  input[type="text"], input[type="number"]{
-    width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
-    background:transparent;color:var(--text);outline:none
-  }
-  input::placeholder{color:var(--muted)}
-  .num{max-width:160px}
+  input[type="text"],input[type="number"]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);outline:none}
+  input::placeholder{color:var(--muted)} .num{max-width:160px}
   .hint{color:var(--muted);font-size:12px;margin-top:6px}
   .kpis{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-  .badge{
-    padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px
-  }
+  .badge{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px}
   .progress{margin-top:12px;font-size:13px;color:var(--muted)}
   .list{margin-top:14px;display:grid;gap:10px}
-  .row{
-    border:1px solid var(--border);border-radius:12px;padding:12px;background:rgba(0,0,0,.04)
-  }
+  .row{border:1px solid var(--border);border-radius:12px;padding:12px;background:rgba(0,0,0,.04)}
   .row h3{margin:0 0 6px 0;font-size:16px}
   .kv{display:flex;gap:10px;flex-wrap:wrap}
   .kv span{font-size:12px;color:var(--muted);border:1px dashed var(--border);padding:4px 8px;border-radius:999px}
   .urls{margin-top:6px;font-size:12px;direction:ltr}
-  .cta{
-    position:sticky;bottom:0;margin-top:18px;background:var(--card);
-    border:1px solid var(--border);padding:12px;border-radius:12px;display:flex;gap:10px;align-items:center;justify-content:space-between;box-shadow:var(--shadow)
-  }
+  .cta{position:sticky;bottom:0;margin-top:18px;background:var(--card);border:1px solid var(--border);padding:12px;border-radius:12px;display:flex;gap:10px;align-items:center;justify-content:space-between;box-shadow:var(--shadow)}
   .foot{margin-top:18px;color:var(--muted);font-size:12px;display:grid;gap:8px}
   .paidBar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .hide{display:none !important}
-  .sep{height:1px;background:var(--border);margin:14px 0}
   .pillOK{color:#fff;background:var(--ok);border:0}
   .pillWARN{color:#fff;background:var(--warn);border:0}
   .pillINFO{color:#fff;background:var(--accent);border:0}
   a.link{color:var(--accent);text-decoration:none}
-  .topbar{display:flex;align-items:center;justify-content:space-between;gap:8px}
-  .top-left{display:flex;gap:8px}
-  .top-right{display:flex;gap:8px}
+  .dbg{margin-top:10px;font-size:12px;color:var(--muted);white-space:pre-wrap;max-height:200px;overflow:auto;border:1px dashed var(--border);border-radius:10px;padding:8px}
 </style>
 </head>
 <body>
   <div class="wrap">
     <div class="topbar">
-      <div class="top-left actions">
+      <div class="actions">
         <button class="btn" id="backBtn">رجوع</button>
         <a class="btn" id="homeBtn" href="https://anasrashed.com" target="_self" rel="noopener">الرئيسية</a>
       </div>
-      <div class="top-right toolbar">
-        <div class="switch">
-          <label for="themeToggle">الوضع الفاتح</label>
-          <input id="themeToggle" type="checkbox" />
-        </div>
+      <div class="switch">
+        <label for="themeToggle">الوضع الفاتح</label>
+        <input id="themeToggle" type="checkbox" />
       </div>
     </div>
 
@@ -129,15 +78,9 @@
       <div class="card">
         <form id="form">
           <div class="grid">
-            <div class="domainRow">
-              <input type="text" id="c1" placeholder="example.com أو https://example.com/sitemap.xml">
-            </div>
-            <div class="domainRow">
-              <input type="text" id="c2" placeholder="اختياري: منافس ثانٍ">
-            </div>
-            <div class="domainRow">
-              <input type="text" id="c3" placeholder="اختياري: منافس ثالث">
-            </div>
+            <div class="domainRow"><input type="text" id="c1" placeholder="example.com أو https://example.com/sitemap.xml"></div>
+            <div class="domainRow"><input type="text" id="c2" placeholder="اختياري: منافس ثانٍ"></div>
+            <div class="domainRow"><input type="text" id="c3" placeholder="اختياري: منافس ثالث"></div>
             <div class="domainRow">
               <input type="number" id="maxPages" class="num" min="30" max="90" step="1">
               <button type="submit" class="btn primary" id="startBtn">ابدأ التحليل</button>
@@ -146,6 +89,7 @@
           <div class="hint">أدخل دومين (سنحوّله تلقائيًا إلى /sitemap.xml) أو رابط خريطة موقع مباشر (sitemap.xml / sitemap_index.xml / .xml.gz). الحد الأقصى للصفحات لكل منافس بين 30 و 90.</div>
           <div class="kpis" id="kpis"></div>
           <div class="progress" id="progress"></div>
+          <div class="dbg" id="debugBox" hidden></div>
         </form>
       </div>
 
@@ -162,9 +106,7 @@
         </div>
         <div id="results" class="list"></div>
         <div class="cta" id="cta">
-          <div>
-            تريد القائمة الكاملة؟ ادفع <b>25 ريال</b> واحصل على جميع الكلمات المفتاحية في ملف CSV الجاهز للتنزيل.
-          </div>
+          <div>تريد القائمة الكاملة؟ ادفع <b>25 ريال</b> واحصل على جميع الكلمات المفتاحية في ملف CSV الجاهز للتنزيل.</div>
           <a class="btn primary" id="payBtn" target="_self" rel="noopener">انتقل إلى صفحة الدفع</a>
         </div>
       </div>
@@ -178,26 +120,25 @@
   </div>
 
 <script>
-/* ====================== الثوابت المطلوبة ====================== */
-// ✅ استخدم الدومين المخصص للـWorker
-const WORKER_BASE = 'https://keywords.anasrashed.com';
+/* ====================== إعدادات ====================== */
+const WORKER_BASE = 'https://keywords-tool.anasshopify88.workers.dev'; // أو https://keywords.anasrashed.com عند ربط الدومين
 const MAX_COMPETITORS = 3;
 const DEFAULT_MAX_PAGES = 45;
 const CONCURRENCY = 4;
-const PAYMENT_LINK = 'https://anasrashed.com/azqRabz'; // Checkout سلة
+const PAYMENT_LINK = 'https://anasrashed.com/azqRabz';
 const RETURN_PARAM = 'paid';
 const RETURN_VALUE = '1';
-const ACCESS_CODE_SHA256 = []; // أكواد اختيارية
+const ACCESS_CODE_SHA256 = []; // أكواد تفعيل اختيارية
 
-/* ====================== تهيئة واجهة ====================== */
+/* ====================== عناصر ====================== */
 const el = sel => document.querySelector(sel);
 const $c1 = el('#c1'), $c2 = el('#c2'), $c3 = el('#c3');
 const $maxPages = el('#maxPages'), $form = el('#form');
 const $progress = el('#progress'), $results = el('#results'), $found = el('#foundBadge');
 const $payBtn = el('#payBtn'), $dlCSV = el('#dlCSV'), $dlMD = el('#dlMD');
 const $activate = el('#activateBtn'), $codeInput = el('#codeInput');
-const $themeToggle = el('#themeToggle');
-const $backBtn = el('#backBtn');
+const $themeToggle = el('#themeToggle'); const $backBtn = el('#backBtn');
+const $kpis = el('#kpis'); const $debugBox = el('#debugBox');
 
 document.documentElement.setAttribute('data-theme', (localStorage.getItem('ck_theme') || 'dark'));
 $themeToggle.checked = (localStorage.getItem('ck_theme') === 'light');
@@ -206,27 +147,20 @@ $themeToggle.addEventListener('change', () => {
   document.documentElement.setAttribute('data-theme', t);
   localStorage.setItem('ck_theme', t);
 });
-
 $backBtn.onclick = () => window.history.back();
-
 $maxPages.value = DEFAULT_MAX_PAGES;
 $payBtn.href = PAYMENT_LINK;
 
 /* فتح التنزيل تلقائيًا عند العودة مع ?paid=1 */
 (function handleReturnParam(){
   const params = new URLSearchParams(location.search);
-  if (params.get(RETURN_PARAM) === RETURN_VALUE) {
-    localStorage.setItem('ck_paid','1');
-  }
-  if (localStorage.getItem('ck_paid') === '1') {
-    $dlCSV.classList.remove('hide');
-    $dlMD.classList.remove('hide');
-  }
+  if (params.get(RETURN_PARAM) === RETURN_VALUE) localStorage.setItem('ck_paid','1');
+  if (localStorage.getItem('ck_paid') === '1') { $dlCSV.classList.remove('hide'); $dlMD.classList.remove('hide'); }
 })();
 
-/* ====================== أدوات مساعدة عامة ====================== */
+/* ====================== أدوات مساعدة ====================== */
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
 function uniq(arr){ return Array.from(new Set(arr)); }
 function byScoreDesc(a,b){ return b.score - a.score; }
 function toCSV(rows){
@@ -238,222 +172,130 @@ function toCSV(rows){
 function download(name, mime, data){
   const blob = new Blob([data], {type: mime});
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = name; document.body.appendChild(a); a.click();
+  const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click();
   setTimeout(()=>{URL.revokeObjectURL(url);a.remove();}, 0);
 }
-/* SHA-256 (Web Crypto) */
 async function sha256Hex(str){
   const enc = new TextEncoder().encode(str);
   const buf = await crypto.subtle.digest('SHA-256', enc);
-  const arr = Array.from(new Uint8Array(buf));
-  return arr.map(b=>b.toString(16).padStart(2,'0')).join('');
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-/* ====================== تطبيع عربي + توكنيزر ====================== */
-const AR_STOPWORDS = new Set([
-  "في","وفي","على","من","عن","أن","إن","او","أو","إلى","الى","و","ثم","كما","كان","كانت","يكون",
-  "ما","لا","لم","لن","قد","هذه","هذا","هو","هي","هم","هن","ذلك","تلك","أين","أينما","كيف","متى","لما",
-  "أي","أيضا","ايضا","كل","حتى","قد","لقد","مع","بعد","قبل","بين","أثناء","حيث","لدى","لدي","التي",
-  "الذي","الذين","اللذي","اللذين","ذات","نحو","أمام","خلف","فوق","تحت","داخل","خارج","بدون","غير","مثل",
-  "عند","إذ","اذ","إذا","اذا","لكن","بل","إنما","أيما","ام","أما","أما","أم","به","بهذا","بها","بهم",
-  "الى","ألا","الا","ألا","الا","ذلك","هنا","هناك","منذ","ضمن","جدا","قد","قد","لقد","تم","تمت","كما",
-  "أكثر","أقل","بشكل","طريقة","مجرد","أيضا","ربما","يمكن","لازال","لا زال","لايزال","لا يزال","او","أو"
-]);
-const AR_DIAC = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g;
-const AR_TATWEEL = /\u0640/g;
-
+/* ====================== تطبيع + توكنيزر ====================== */
+const AR_STOPWORDS = new Set(["في","وفي","على","من","عن","أن","إن","او","أو","إلى","الى","و","ثم","كما","كان","كانت","يكون","ما","لا","لم","لن","قد","هذه","هذا","هو","هي","هم","هن","ذلك","تلك","أين","أينما","كيف","متى","لما","أي","أيضا","ايضا","كل","حتى","مع","بعد","قبل","بين","أثناء","حيث","لدى","لدي","التي","الذي","الذين","اللذي","اللذين","ذات","نحو","أمام","خلف","فوق","تحت","داخل","خارج","بدون","غير","مثل","عند","إذ","اذ","إذا","اذا","لكن","بل","إنما","أيما","ام","أما","أم","به","بهذا","بها","بهم","ألا","الا","هنا","هناك","منذ","ضمن","جدا","لقد","تم","تمت","ربما","يمكن","لازال","لا زال","لايزال","لا يزال"]);
+const AR_DIAC=/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g, AR_TATWEEL=/\u0640/g;
 function normalizeArabic(s){
-  return s
-    .replace(AR_DIAC, '')
-    .replace(AR_TATWEEL, '')
-    .replace(/[إأآا]/g, 'ا')
-    .replace(/ى/g, 'ي')
-    .replace(/ؤ/g, 'و')
-    .replace(/ئ/g, 'ي')
-    .replace(/ة/g, 'ه')
-    .replace(/[^\p{Script=Arabic}\p{Letter}\p{Number}\s\-_/]+/gu, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return s.replace(AR_DIAC,'').replace(AR_TATWEEL,'')
+          .replace(/[إأآا]/g,'ا').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ة/g,'ه')
+          .replace(/[^\p{Script=Arabic}\p{Letter}\p{Number}\s\-_/]+/gu,' ')
+          .replace(/\s+/g,' ').trim();
 }
 function tokenize(s){
-  return s
-    .split(/\s+/)
-    .map(t => t.replace(/^[\W_]+|[\W_]+$/g,''))
-    .filter(t => t.length >= 2 && !/^\d+$/.test(t) && !AR_STOPWORDS.has(t));
+  return s.split(/\s+/).map(t=>t.replace(/^[\W_]+|[\W_]+$/g,''))
+          .filter(t=>t.length>=2 && !/^\d+$/.test(t) && !AR_STOPWORDS.has(t));
 }
 function ngrams(tokens, nmin=1, nmax=5){
   const out=[];
   for(let n=nmin;n<=nmax;n++){
-    for(let i=0;i<=tokens.length - n;i++){
-      const g = tokens.slice(i,i+n);
-      if (g.every(t => AR_STOPWORDS.has(t) || t.length<2)) continue;
+    for(let i=0;i<=tokens.length-n;i++){
+      const g=tokens.slice(i,i+n);
+      if (g.every(t=>AR_STOPWORDS.has(t)||t.length<2)) continue;
       out.push(g.join(' '));
     }
   }
   return out;
 }
 
-/* ====================== تحليل موضعي TF-IDF ====================== */
+/* ====================== TF-IDF ====================== */
 function scoreEntry(baseTF, idf, flags){
-  const wTitle = flags.in_title ? 3.0 : 0;
-  const wH1   = flags.in_h1    ? 2.0 : 0;
-  const wSlug = flags.in_slug  ? 1.5 : 0;
-  const wAnc  = flags.in_anchor? 1.2 : 0;
-  const locBoost = 1 + wTitle + wH1 + wSlug + wAnc;
-  return baseTF * idf * locBoost;
+  const wTitle = flags.in_title?3:0, wH1=flags.in_h1?2:0, wSlug=flags.in_slug?1.5:0, wAnc=flags.in_anchor?1.2:0;
+  return baseTF * idf * (1 + wTitle + wH1 + wSlug + wAnc);
 }
 
-/* ====================== جلب عبر الـWorker ====================== */
+/* ====================== اتصال Worker ====================== */
 function canonicalizeInput(v){
-  v = v.trim();
-  if (!v) return '';
-  try{
-    if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
-    const url = new URL(v);
-    if (!/\.xml(\.gz)?$/i.test(url.pathname)){
-      url.pathname = '/sitemap.xml';
-    }
-    return url.toString();
-  }catch(e){ return ''; }
+  v=v.trim(); if(!v) return '';
+  try{ if(!/^https?:\/\//i.test(v)) v='https://'+v; const u=new URL(v);
+    if(!/\.xml(\.gz)?$/i.test(u.pathname)) u.pathname='/sitemap.xml';
+    return u.toString();
+  }catch{ return ''; }
 }
-
+async function fetchJSON(u){ const r = await fetch(u,{headers:{accept:'application/json'}}); if(!r.ok) throw new Error(`HTTP ${r.status}`); return await r.json(); }
 async function fetchSitemap(workerBase, siteOrMap, max){
-  const u = new URL(workerBase + '/sitemap');
-  u.searchParams.set('url', siteOrMap);
-  u.searchParams.set('max', String(max));
-  const r = await fetch(u.toString(), {headers:{'accept':'application/json'}});
-  const j = await r.json().catch(()=>({ok:false,error:'bad json'}));
-  if (!r.ok || !j.ok) {
-    throw new Error('فشل جلب خريطة الموقع: ' + (j && j.error ? j.error : r.status));
-  }
-  return j;
+  const u = new URL(workerBase + '/sitemap'); u.searchParams.set('url', siteOrMap); u.searchParams.set('max', String(max));
+  return await fetchJSON(u.toString());
 }
 async function fetchPage(workerBase, url){
-  const u = new URL(workerBase + '/page');
-  u.searchParams.set('url', url);
-  const r = await fetch(u.toString(), {headers:{'accept':'application/json'}});
-  const j = await r.json().catch(()=>({ok:false,error:'bad json'}));
-  if (!r.ok || !j.ok) {
-    return { ok:false, url, error: (j && j.error) || ('status '+r.status) };
-  }
-  return j;
+  const u = new URL(workerBase + '/page'); u.searchParams.set('url', url);
+  return await fetchJSON(u.toString());
 }
 
-
-/* ====================== مُجمّع الصفحات مع تقدم ====================== */
+/* ====================== مجمّع + تحليل ====================== */
 async function poolAll(urls, workerBase, onTick){
-  const results = [];
-  let idx = 0, active = 0, done = 0;
-  return new Promise((resolve) => {
-    const next = () => {
-      if (done === urls.length && active === 0) return resolve(results);
-      while(active < CONCURRENCY && idx < urls.length){
-        const my = idx++;
-        const u = urls[my];
-        active++;
-        fetchPage(workerBase, u).then(j=>{
-          results[my] = j;
-        }).catch(_=>{
-          results[my] = {ok:false, url:u};
-        }).finally(()=>{
-          active--; done++; onTick(done, urls.length);
-          next();
-        });
+  const results=[]; let idx=0, active=0, done=0;
+  return new Promise((resolve)=>{
+    const next=()=>{
+      if(done===urls.length && active===0) return resolve(results);
+      while(active<CONCURRENCY && idx<urls.length){
+        const my=idx++; const u=urls[my]; active++;
+        fetchPage(workerBase, u).then(j=>{ results[my]=j; })
+        .catch(e=>{ results[my]={ok:false,url:u,error:String(e)}; })
+        .finally(()=>{ active--; done++; onTick(done, urls.length); next(); });
       }
-    };
-    next();
+    }; next();
   });
 }
 
-/* ====================== معالجة المحتوى إلى عبارات ====================== */
 function pageToFields(p){
-  const title = normalizeArabic((p.title||''));
-  const h1s   = (p.h1||[]).map(normalizeArabic).join(' ');
-  const anchors = (p.anchors||[]).map(normalizeArabic).join(' ');
-  const slug = (p.slugTokens||[]).map(normalizeArabic).join(' ');
-  const text = normalizeArabic((p.text||''));
-
-  const allText = [title, h1s, anchors, slug, text].filter(Boolean).join(' ');
-  const tok = tokenize(allText);
-  const grams = ngrams(tok, 1, 5);
-
-  const tTok = ngrams(tokenize(title), 1, 5);
-  const hTok = ngrams(tokenize(h1s), 1, 5);
-  const sTok = ngrams(tokenize(slug), 1, 5);
-  const aTok = ngrams(tokenize(anchors), 1, 5);
-
-  const inTitle = new Set(tTok);
-  const inH1    = new Set(hTok);
-  const inSlug  = new Set(sTok);
-  const inAnc   = new Set(aTok);
-
-  const tf = new Map();
-  for(const g of grams){
-    tf.set(g, (tf.get(g)||0) + 1);
-  }
-  return { tf, sets:{inTitle, inH1, inSlug, inAnc} };
+  const title=normalizeArabic((p.title||'')), h1s=(p.h1||[]).map(normalizeArabic).join(' ');
+  const anchors=(p.anchors||[]).map(normalizeArabic).join(' '), slug=(p.slugTokens||[]).map(normalizeArabic).join(' ');
+  const text=normalizeArabic((p.text||'')); const all=[title,h1s,anchors,slug,text].filter(Boolean).join(' ');
+  const tok=tokenize(all); const grams=ngrams(tok,1,5);
+  const tTok=ngrams(tokenize(title),1,5), hTok=ngrams(tokenize(h1s),1,5), sTok=ngrams(tokenize(slug),1,5), aTok=ngrams(tokenize(anchors),1,5);
+  const inTitle=new Set(tTok), inH1=new Set(hTok), inSlug=new Set(sTok), inAnc=new Set(aTok);
+  const tf=new Map(); for(const g of grams){ tf.set(g,(tf.get(g)||0)+1); }
+  return { tf, sets:{inTitle,inH1,inSlug,inAnc} };
 }
-
 function aggregate(pages){
-  const DF = new Map();
-  const TF = new Map();
-  const FLAGS = new Map();
-  const SAMPLES = new Map();
+  const DF=new Map(), TF=new Map(), FLAGS=new Map(), SAMPLES=new Map();
   for(const pg of pages){
-    if (!pg || !pg.ok) continue;
-    const {tf, sets} = pageToFields(pg);
+    if(!pg || !pg.ok) continue;
+    const {tf, sets}=pageToFields(pg);
     for(const k of tf.keys()){
-      DF.set(k, (DF.get(k)||0) + 1);
-      TF.set(k, (TF.get(k)||0) + tf.get(k));
-      const f = FLAGS.get(k) || {in_title:false,in_h1:false,in_slug:false,in_anchor:false};
-      if (sets.inTitle.has(k)) f.in_title = true;
-      if (sets.inH1.has(k))    f.in_h1    = true;
-      if (sets.inSlug.has(k))  f.in_slug  = true;
-      if (sets.inAnc.has(k))   f.in_anchor= true;
-      FLAGS.set(k, f);
-      const ss = SAMPLES.get(k) || new Set();
-      if (ss.size < 2) ss.add(pg.url);
-      SAMPLES.set(k, ss);
+      DF.set(k,(DF.get(k)||0)+1);
+      TF.set(k,(TF.get(k)||0)+tf.get(k));
+      const f=FLAGS.get(k)||{in_title:false,in_h1:false,in_slug:false,in_anchor:false};
+      if(sets.inTitle.has(k)) f.in_title=true;
+      if(sets.inH1.has(k)) f.in_h1=true;
+      if(sets.inSlug.has(k)) f.in_slug=true;
+      if(sets.inAnc.has(k)) f.in_anchor=true;
+      FLAGS.set(k,f);
+      const ss=SAMPLES.get(k)||new Set(); if(ss.size<2) ss.add(pg.url); SAMPLES.set(k,ss);
     }
   }
-  const N = pages.length || 1;
-  const out = [];
+  const N=Math.max(1,pages.filter(p=>p&&p.ok).length);
+  const out=[];
   for(const [k, tf] of TF.entries()){
-    const df = DF.get(k) || 1;
-    const idf = Math.log((N+1)/(df+1)) + 1;
-    const flags = FLAGS.get(k) || {in_title:false,in_h1:false,in_slug:false,in_anchor:false};
-    const score = scoreEntry(tf, idf, flags);
-    out.push({
-      keyword: k,
-      score: Number(score.toFixed(6)),
-      tf, df,
-      pages_count: df,
-      in_title: flags.in_title ? 1:0,
-      in_h1:    flags.in_h1    ? 1:0,
-      in_slug:  flags.in_slug  ? 1:0,
-      in_anchor:flags.in_anchor? 1:0,
-      sample_urls: Array.from(SAMPLES.get(k) || [])
-    });
+    const df=DF.get(k)||1; const idf=Math.log((N+1)/(df+1))+1;
+    const flags=FLAGS.get(k)||{in_title:false,in_h1:false,in_slug:false,in_anchor:false};
+    const score=scoreEntry(tf,idf,flags);
+    out.push({ keyword:k, score:+score.toFixed(6), tf, df, pages_count:df,
+      in_title:flags.in_title?1:0, in_h1:flags.in_h1?1:0, in_slug:flags.in_slug?1:0, in_anchor:flags.in_anchor?1:0,
+      sample_urls:Array.from(SAMPLES.get(k)||[]) });
   }
-  out.sort(byScoreDesc);
-  return out;
+  out.sort(byScoreDesc); return out;
 }
 
-/* ====================== عرض النتائج ====================== */
-let ALL_RESULTS = [];
+/* ====================== عرض ====================== */
+let ALL_RESULTS=[];
+function escapeHTML(s){return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function render(list){
-  const paid = (localStorage.getItem('ck_paid') === '1');
-  $dlCSV.classList.toggle('hide', !paid);
-  $dlMD.classList.toggle('hide', !paid);
-
-  $found.textContent = `تم العثور على ${list.length} كلمة مفتاحية`;
-  const show = paid ? list : list.slice(0,5);
-  $results.innerHTML = '';
+  const paid=(localStorage.getItem('ck_paid')==='1'); $dlCSV.classList.toggle('hide',!paid); $dlMD.classList.toggle('hide',!paid);
+  $found.textContent=`تم العثور على ${list.length} كلمة مفتاحية`;
+  const show=paid?list:list.slice(0,5); $results.innerHTML='';
   for(const r of show){
-    const div = document.createElement('div');
-    div.className = 'row';
-    div.innerHTML = `
+    const div=document.createElement('div'); div.className='row';
+    div.innerHTML=`
       <h3>${escapeHTML(r.keyword)}</h3>
       <div class="kv">
         <span>Score: ${r.score}</span>
@@ -465,131 +307,91 @@ function render(list){
         <span class="${r.in_slug?'pillOK':'badge'}">in_slug: ${r.in_slug? '✓':'—'}</span>
         <span class="${r.in_anchor?'pillOK':'badge'}">in_anchor: ${r.in_anchor? '✓':'—'}</span>
       </div>
-      <div class="urls">${r.sample_urls.map(u=>`<a class="link" href="${u}" target="_blank" rel="noopener">${u}</a>`).join('  ')}</div>
-    `;
+      <div class="urls">${r.sample_urls.map(u=>`<a class="link" href="${u}" target="_blank" rel="noopener">${u}</a>`).join('  ')}</div>`;
     $results.appendChild(div);
   }
 }
 
-function escapeHTML(s){return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-
-/* ====================== CSV / Markdown ====================== */
+/* CSV / MD */
 function buildCSVRows(items){
-  const header = ['keyword','score','tf','df','pages_count','in_title','in_h1','in_slug','in_anchor','sample_urls'];
-  const rows = [header];
-  for(const r of items){
-    rows.push([
-      r.keyword, r.score, r.tf, r.df, r.pages_count, r.in_title, r.in_h1, r.in_slug, r.in_anchor, r.sample_urls.join(' ')
-    ]);
-  }
+  const header=['keyword','score','tf','df','pages_count','in_title','in_h1','in_slug','in_anchor','sample_urls'];
+  const rows=[header]; for(const r of items){ rows.push([r.keyword,r.score,r.tf,r.df,r.pages_count,r.in_title,r.in_h1,r.in_slug,r.in_anchor,r.sample_urls.join(' ')]); }
   return rows;
 }
-
 function buildMarkdown(items){
-  const groups = new Map();
-  for(const r of items){
-    const head = r.keyword.split(' ')[0] || r.keyword;
-    if (!groups.has(head)) groups.set(head, []);
-    groups.get(head).push(r);
-  }
-  let md = `# ملخص الموضوعات المستخرجة\n\n`;
-  for(const [head, arr] of groups){
-    const top = arr.slice(0, Math.min(10, arr.length));
-    md += `## ${head}\n\n`;
-    for(const r of top){
-      md += `- **${r.keyword}** — Score: ${r.score} | صفحات: ${r.pages_count}\n`;
-    }
-    md += `\n`;
-  }
-  md += `\n> تمت توليد هذه القائمة محليًا من محتوى المنافسين عبر TF-IDF مع أوزان موضعية (Title/H1/Slug/Anchors).\n`;
-  return md;
+  const groups=new Map();
+  for(const r of items){ const head=r.keyword.split(' ')[0]||r.keyword; if(!groups.has(head)) groups.set(head,[]); groups.get(head).push(r); }
+  let md=`# ملخص الموضوعات المستخرجة\n\n`;
+  for(const [head,arr] of groups){ const top=arr.slice(0,Math.min(10,arr.length)); md+=`## ${head}\n\n`; for(const r of top){ md+=`- **${r.keyword}** — Score: ${r.score} | صفحات: ${r.pages_count}\n`; } md+=`\n`; }
+  md+=`\n> تمت التوليد من محتوى المنافسين عبر TF-IDF مع أوزان موضعية.\n`; return md;
+}
+$dlCSV.onclick=()=>{ if(localStorage.getItem('ck_paid')!=='1') return; const csv=toCSV(buildCSVRows(ALL_RESULTS)); download('competitors_keywords.csv','text/csv;charset=utf-8',csv); }
+$dlMD.onclick=()=>{ if(localStorage.getItem('ck_paid')!=='1') return; const md=buildMarkdown(ALL_RESULTS); download('competitors_keywords.md','text/markdown;charset=utf-8',md); }
+
+/* تفعيل برمز */
+$activate.addEventListener('click', async ()=>{
+  const raw=($codeInput.value||'').trim(); if(!raw) return;
+  const hex=await sha256Hex(raw);
+  if(ACCESS_CODE_SHA256.includes(hex)){ localStorage.setItem('ck_paid','1'); $dlCSV.classList.remove('hide'); $dlMD.classList.remove('hide'); alert('تم التفعيل.'); }
+  else{ alert('رمز غير صحيح.'); }
+});
+
+/* ====================== السريان ====================== */
+function showDebug(obj){
+  try{ $debugBox.hidden=false; $debugBox.textContent = JSON.stringify(obj,null,2); }catch{ $debugBox.hidden=false; $debugBox.textContent=String(obj); }
 }
 
-$dlCSV.addEventListener('click', ()=>{
-  if (localStorage.getItem('ck_paid') !== '1') return;
-  const csv = toCSV(buildCSVRows(ALL_RESULTS));
-  download('competitors_keywords.csv', 'text/csv;charset=utf-8', csv);
-});
-$dlMD.addEventListener('click', ()=>{
-  if (localStorage.getItem('ck_paid') !== '1') return;
-  const md = buildMarkdown(ALL_RESULTS);
-  download('competitors_keywords.md', 'text/markdown;charset=utf-8', md);
-});
-
-/* ====================== تفعيل برمز الوصول ====================== */
-$activate.addEventListener('click', async ()=>{
-  const raw = ($codeInput.value||'').trim();
-  if (!raw) return;
-  const hex = await sha256Hex(raw);
-  if (ACCESS_CODE_SHA256.includes(hex)){
-    localStorage.setItem('ck_paid','1');
-    $dlCSV.classList.remove('hide');
-    $dlMD.classList.remove('hide');
-    alert('تم التفعيل. يمكنك تنزيل CSV و Markdown الآن.');
-  }else{
-    alert('رمز غير صحيح.');
-  }
-});
-
-/* ====================== سير العمل ====================== */
 $form.addEventListener('submit', async (e)=>{
   e.preventDefault();
-  $results.innerHTML = '';
-  $progress.textContent = '';
-  ALL_RESULTS = [];
-  $found.textContent = 'تم العثور على 0 كلمة مفتاحية';
+  $results.innerHTML=''; $progress.textContent=''; ALL_RESULTS=[]; $found.textContent='تم العثور على 0 كلمة مفتاحية'; $kpis.innerHTML=''; $debugBox.hidden=true;
 
-  const inputs = [$c1.value, $c2.value, $c3.value].map(v => v.trim()).filter(Boolean);
-  if (inputs.length === 0){ alert('أدخل منافسًا واحدًا على الأقل'); return; }
-  if (inputs.length > MAX_COMPETITORS){ alert(`مسموح حتى ${MAX_COMPETITORS} منافسين`); return; }
+  const inputs=[$c1.value,$c2.value,$c3.value].map(v=>v.trim()).filter(Boolean);
+  if(inputs.length===0){ alert('أدخل منافسًا واحدًا على الأقل'); return; }
+  if(inputs.length>MAX_COMPETITORS){ alert(`مسموح حتى ${MAX_COMPETITORS} منافسين`); return; }
+  const max=clamp(parseInt($maxPages.value||DEFAULT_MAX_PAGES,10),30,90);
 
-  const max = clamp(parseInt($maxPages.value||DEFAULT_MAX_PAGES,10), 30, 90);
-
-  // 1) جلب روابط الصفحات من السايت ماب لكل منافس
-  let allUrls = [];
-  for (let i=0;i<inputs.length;i++){
-    const siteOrMap = canonicalizeInput(inputs[i]);
-    if (!siteOrMap){ alert('تنسيق الإدخال غير صحيح'); return; }
-    $progress.textContent = `جاري قراءة خريطة الموقع للمنافس ${i+1} ...`;
-    try{
-      const sm = await fetchSitemap(WORKER_BASE, siteOrMap, max);
-      if (!sm.ok) throw new Error('سجل غير صالح');
-      const urls = (sm.urls||[]).slice(0, max);
-      allUrls = allUrls.concat(urls);
-    }catch(err){
-      alert('تعذر قراءة خريطة الموقع لمنافس: ' + inputs[i]);
+  try{
+    // 1) خرائط المواقع
+    let allUrls=[];
+    for(let i=0;i<inputs.length;i++){
+      const siteOrMap=canonicalizeInput(inputs[i]);
+      if(!siteOrMap){ alert('تنسيق الإدخال غير صحيح'); return; }
+      $progress.textContent=`جاري قراءة خريطة الموقع للمنافس ${i+1} ...`;
+      try{
+        const sm=await fetchSitemap(WORKER_BASE, siteOrMap, max);
+        if(!sm.ok){ throw new Error('sitemap not ok'); }
+        const urls=(sm.urls||[]).slice(0,max);
+        allUrls=allUrls.concat(urls);
+        // KPIs + Debug لما تساعد
+        const b=document.createElement('span'); b.className='badge'; b.textContent=`${new URL(siteOrMap).hostname}: ${urls.length} رابط`;
+        $kpis.appendChild(b);
+        if((urls.length===0) && sm.debug){ showDebug({ reason:'Empty sitemap urls', input:inputs[i], debug:sm.debug }); }
+      }catch(err){
+        showDebug({ reason:'sitemap fetch error', input:inputs[i], error:String(err) });
+      }
+      await sleep(120); // هدنة بسيطة
     }
+    allUrls=uniq(allUrls);
+    if(allUrls.length===0){ alert('لم يتم العثور على روابط صفحات'); return; }
+
+    // 2) جمع الصفحات
+    let doneCount=0;
+    $progress.textContent=`جاري جمع الصفحات… ${doneCount} / ${allUrls.length}`;
+    const pages=await poolAll(allUrls, WORKER_BASE, (d,total)=>{ doneCount=d; $progress.textContent=`جاري جمع الصفحات… ${d} / ${total}`; });
+
+    // لو كثير منها فشل، اعرض لمحة
+    const fails=pages.filter(p=>!p||!p.ok);
+    if(fails.length===pages.length){ showDebug({ reason:'all page fetches failed', sample:fails.slice(0,5) }); }
+
+    // 3) تحليل
+    $progress.textContent='جاري التحليل اللغوي…'; await sleep(50);
+    ALL_RESULTS=aggregate(pages);
+    render(ALL_RESULTS);
+    $progress.textContent='اكتمل التحليل.';
+  }catch(err){
+    showDebug({ reason:'top-level error', error:String(err) });
+    alert('حدث خطأ غير متوقع. راجع صندوق التشخيص أسفل النموذج.');
   }
-  allUrls = uniq(allUrls);
-
-  if (allUrls.length === 0){
-    $progress.textContent = 'لم يتم العثور على روابط صفحات من خرائط المواقع المدخلة.';
-    return;
-  }
-
-  // 2) جلب تفاصيل الصفحات مع شريط تقدم
-  let doneCount = 0;
-  $progress.textContent = `جاري جمع الصفحات… ${doneCount} / ${allUrls.length}`;
-  const pages = await poolAll(allUrls, WORKER_BASE, (d, total)=>{
-    doneCount = d;
-    $progress.textContent = `جاري جمع الصفحات… ${d} / ${total}`;
-  });
-
-  // ✅ فحص واضح: لا توجد صفحات صالحة للقراءة
-  const okPages = pages.filter(p => p && p.ok).length;
-  if (okPages === 0) {
-    $progress.textContent = 'ما قدرنا نقرأ أي صفحة. غالبًا robots.txt يمنع أو السيرفر يحجب الـUser-Agent. جرّب منافسًا آخر أو قلّل عدد الصفحات، أو انتظر قليلًا ثم أعد المحاولة.';
-    alert('تعذر قراءة محتوى الصفحات (ربما robots.txt يمنع أو يوجد حجب).');
-    return;
-  }
-
-  // 3) تحليل وترتيب
-  $progress.textContent = 'جاري التحليل اللغوي…';
-  await sleep(50);
-  const aggr = aggregate(pages);
-  ALL_RESULTS = aggr;
-  render(ALL_RESULTS);
-  $progress.textContent = 'اكتمل التحليل.';
 });
 </script>
 </body>
