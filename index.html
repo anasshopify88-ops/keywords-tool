@@ -323,17 +323,23 @@ async function fetchSitemap(workerBase, siteOrMap, max){
   u.searchParams.set('url', siteOrMap);
   u.searchParams.set('max', String(max));
   const r = await fetch(u.toString(), {headers:{'accept':'application/json'}});
-  if (!r.ok) throw new Error('فشل جلب خريطة الموقع');
-  return await r.json();
+  const j = await r.json().catch(()=>({ok:false,error:'bad json'}));
+  if (!r.ok || !j.ok) {
+    throw new Error('فشل جلب خريطة الموقع: ' + (j && j.error ? j.error : r.status));
+  }
+  return j;
 }
-
 async function fetchPage(workerBase, url){
   const u = new URL(workerBase + '/page');
   u.searchParams.set('url', url);
   const r = await fetch(u.toString(), {headers:{'accept':'application/json'}});
-  if (!r.ok) throw new Error('خطأ جلب صفحة');
-  return await r.json();
+  const j = await r.json().catch(()=>({ok:false,error:'bad json'}));
+  if (!r.ok || !j.ok) {
+    return { ok:false, url, error: (j && j.error) || ('status '+r.status) };
+  }
+  return j;
 }
+
 
 /* ====================== مُجمّع الصفحات مع تقدم ====================== */
 async function poolAll(urls, workerBase, onTick){
