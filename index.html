@@ -246,22 +246,36 @@ async function poolAll(urls, workerBase, onTick){
   });
 }
 
+// ======= هنا التعديل: توليد وتوسيم العبارات بين 2–5 كلمات فقط
 function pageToFields(p){
   const title=normalizeArabic((p.title||'')), h1s=(p.h1||[]).map(normalizeArabic).join(' ');
   const anchors=(p.anchors||[]).map(normalizeArabic).join(' '), slug=(p.slugTokens||[]).map(normalizeArabic).join(' ');
   const text=normalizeArabic((p.text||'')); const all=[title,h1s,anchors,slug,text].filter(Boolean).join(' ');
-  const tok=tokenize(all); const grams=ngrams(tok,1,5);
-  const tTok=ngrams(tokenize(title),1,5), hTok=ngrams(tokenize(h1s),1,5), sTok=ngrams(tokenize(slug),1,5), aTok=ngrams(tokenize(anchors),1,5);
+  const tok=tokenize(all);
+
+  // فقط 2–5 كلمات
+  const grams=ngrams(tok,2,5);
+
+  const tTok=ngrams(tokenize(title),   2,5),
+        hTok=ngrams(tokenize(h1s),     2,5),
+        sTok=ngrams(tokenize(slug),    2,5),
+        aTok=ngrams(tokenize(anchors), 2,5);
+
   const inTitle=new Set(tTok), inH1=new Set(hTok), inSlug=new Set(sTok), inAnc=new Set(aTok);
   const tf=new Map(); for(const g of grams){ tf.set(g,(tf.get(g)||0)+1); }
   return { tf, sets:{inTitle,inH1,inSlug,inAnc} };
 }
+
 function aggregate(pages){
   const DF=new Map(), TF=new Map(), FLAGS=new Map(), SAMPLES=new Map();
+
+  const inRange2to5 = (s) => { const c = s.trim().split(/\s+/).filter(Boolean).length; return c>=2 && c<=5; };
+
   for(const pg of pages){
     if(!pg || !pg.ok) continue;
     const {tf, sets}=pageToFields(pg);
     for(const k of tf.keys()){
+      if(!inRange2to5(k)) continue; // ضمان 2–5 كلمات فقط
       DF.set(k,(DF.get(k)||0)+1);
       TF.set(k,(TF.get(k)||0)+tf.get(k));
       const f=FLAGS.get(k)||{in_title:false,in_h1:false,in_slug:false,in_anchor:false};
@@ -276,6 +290,7 @@ function aggregate(pages){
   const N=Math.max(1,pages.filter(p=>p&&p.ok).length);
   const out=[];
   for(const [k, tf] of TF.entries()){
+    if(!inRange2to5(k)) continue; // تأكيد إضافي
     const df=DF.get(k)||1; const idf=Math.log((N+1)/(df+1))+1;
     const flags=FLAGS.get(k)||{in_title:false,in_h1:false,in_slug:false,in_anchor:false};
     const score=scoreEntry(tf,idf,flags);
@@ -288,7 +303,7 @@ function aggregate(pages){
 
 /* ====================== عرض ====================== */
 let ALL_RESULTS=[];
-function escapeHTML(s){return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function escapeHTML(s){return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));}
 function render(list){
   const paid=(localStorage.getItem('ck_paid')==='1'); $dlCSV.classList.toggle('hide',!paid); $dlMD.classList.toggle('hide',!paid);
   $found.textContent=`تم العثور على ${list.length} كلمة مفتاحية`;
@@ -362,14 +377,14 @@ $form.addEventListener('submit', async (e)=>{
         if(!sm.ok){ throw new Error('sitemap not ok'); }
         const urls=(sm.urls||[]).slice(0,max);
         allUrls=allUrls.concat(urls);
-        // KPIs + Debug لما تساعد
+        // KPIs + Debug
         const b=document.createElement('span'); b.className='badge'; b.textContent=`${new URL(siteOrMap).hostname}: ${urls.length} رابط`;
         $kpis.appendChild(b);
         if((urls.length===0) && sm.debug){ showDebug({ reason:'Empty sitemap urls', input:inputs[i], debug:sm.debug }); }
       }catch(err){
         showDebug({ reason:'sitemap fetch error', input:inputs[i], error:String(err) });
       }
-      await sleep(120); // هدنة بسيطة
+      await sleep(120);
     }
     allUrls=uniq(allUrls);
     if(allUrls.length===0){ alert('لم يتم العثور على روابط صفحات'); return; }
@@ -379,7 +394,6 @@ $form.addEventListener('submit', async (e)=>{
     $progress.textContent=`جاري جمع الصفحات… ${doneCount} / ${allUrls.length}`;
     const pages=await poolAll(allUrls, WORKER_BASE, (d,total)=>{ doneCount=d; $progress.textContent=`جاري جمع الصفحات… ${d} / ${total}`; });
 
-    // لو كثير منها فشل، اعرض لمحة
     const fails=pages.filter(p=>!p||!p.ok);
     if(fails.length===pages.length){ showDebug({ reason:'all page fetches failed', sample:fails.slice(0,5) }); }
 
