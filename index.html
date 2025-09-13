@@ -179,7 +179,8 @@
 
 <script>
 /* ====================== الثوابت المطلوبة ====================== */
-const WORKER_BASE = 'https://keywords-tool.anasshopify88.workers.dev'; // غيّرها لاحقاً إلى https://keywords.anasrashed.com إذا ربطت الدومين
+// ✅ استخدم الدومين المخصص للـWorker
+const WORKER_BASE = 'https://keywords.anasrashed.com';
 const MAX_COMPETITORS = 3;
 const DEFAULT_MAX_PAGES = 45;
 const CONCURRENCY = 4;
@@ -555,7 +556,10 @@ $form.addEventListener('submit', async (e)=>{
   }
   allUrls = uniq(allUrls);
 
-  if (allUrls.length === 0){ alert('لم يتم العثور على روابط صفحات'); return; }
+  if (allUrls.length === 0){
+    $progress.textContent = 'لم يتم العثور على روابط صفحات من خرائط المواقع المدخلة.';
+    return;
+  }
 
   // 2) جلب تفاصيل الصفحات مع شريط تقدم
   let doneCount = 0;
@@ -564,6 +568,14 @@ $form.addEventListener('submit', async (e)=>{
     doneCount = d;
     $progress.textContent = `جاري جمع الصفحات… ${d} / ${total}`;
   });
+
+  // ✅ فحص واضح: لا توجد صفحات صالحة للقراءة
+  const okPages = pages.filter(p => p && p.ok).length;
+  if (okPages === 0) {
+    $progress.textContent = 'ما قدرنا نقرأ أي صفحة. غالبًا robots.txt يمنع أو السيرفر يحجب الـUser-Agent. جرّب منافسًا آخر أو قلّل عدد الصفحات، أو انتظر قليلًا ثم أعد المحاولة.';
+    alert('تعذر قراءة محتوى الصفحات (ربما robots.txt يمنع أو يوجد حجب).');
+    return;
+  }
 
   // 3) تحليل وترتيب
   $progress.textContent = 'جاري التحليل اللغوي…';
