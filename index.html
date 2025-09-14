@@ -28,8 +28,8 @@
   .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 14px;box-shadow:var(--shadow)}
   .grid{display:grid;grid-template-columns:1fr;gap:12px}
   .domainRow{display:flex;gap:10px}
-  input[type="text"],input[type="number"]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);outline:none}
-  input::placeholder{color:var(--muted)} .num{max-width:160px}
+  input[type="text"]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);outline:none}
+  input::placeholder{color:var(--muted)}
   .hint{color:var(--muted);font-size:12px;margin-top:6px}
   .kpis{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
   .badge{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px}
@@ -45,10 +45,9 @@
   .paidBar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .hide{display:none !important}
   .pillOK{color:#fff;background:var(--ok);border:0}
-  .pillWARN{color:#fff;background:var(--warn);border:0}
   .pillINFO{color:#fff;background:var(--accent);border:0}
   a.link{color:var(--accent);text-decoration:none}
-  .dbg{margin-top:10px;font-size:12px;color:var(--muted);white-space:pre-wrap;max-height:200px;overflow:auto;border:1px dashed var(--border);border-radius:10px;padding:8px}
+  .dbg{margin-top:10px;font-size:12px;color:var(--muted);white-space:pre-wrap;max-height:260px;overflow:auto;border:1px dashed var(--border);border-radius:10px;padding:8px}
 </style>
 </head>
 <body>
@@ -69,7 +68,7 @@
         <img class="owner" src="https://anasrashed.com/ZqyGaBZ" alt="المالك">
         <div>
           <h1>اعرف الكلمات المفتاحية الخاصة بمنافسيك</h1>
-          <div class="sub">اضف روابط لـ 3 منافسين كحد أقصى لمعرفة الكلمات المفتاحية التي تجلب لهم زيارات.</div>
+          <div class="sub">أدخل حتى 3 منافسين، والأداة تجلب جميع الصفحات من خريطة الموقع وتستخرج الكلمات من <b>العنوان</b> و<b>الوصف</b> و<b>ALT</b> و<b>التصنيفات</b> فقط.</div>
         </div>
       </div>
     </div>
@@ -82,11 +81,10 @@
             <div class="domainRow"><input type="text" id="c2" placeholder="اختياري: منافس ثانٍ"></div>
             <div class="domainRow"><input type="text" id="c3" placeholder="اختياري: منافس ثالث"></div>
             <div class="domainRow">
-              <input type="number" id="maxPages" class="num" min="30" max="90" step="1">
-              <button type="submit" class="btn primary" id="startBtn">ابدأ التحليل</button>
+              <button type="submit" class="btn primary" id="startBtn">ابدأ التحليل (بدون حد صفحات)</button>
             </div>
           </div>
-          <div class="hint">أدخل دومين (سنحوّله تلقائيًا إلى /sitemap.xml) أو رابط خريطة موقع مباشر (sitemap.xml / sitemap_index.xml / .xml.gz). الحد الأقصى للصفحات لكل منافس بين 30 و 90.</div>
+          <div class="hint">سنحوّل الدومين تلقائيًا إلى /sitemap.xml. يتم جلب كل الروابط من خرائط الموقع (حتى 20,000 رابط لكل منافس كحد آمن).</div>
           <div class="kpis" id="kpis"></div>
           <div class="progress" id="progress"></div>
           <div class="dbg" id="debugBox" hidden></div>
@@ -112,28 +110,27 @@
       </div>
 
       <div class="foot">
-        <div>هذه العبارات مستخرجة من محتوى المنافسين وليست أحجام بحث.</div>
+        <div>هذه العبارات مستخرجة من محتوى المنافسين (وليس أحجام بحث).</div>
         <div>لا يتم إرسال بياناتك لأي خادم باستثناء جلب صفحات المنافسين عبر الـWorker.</div>
-        <div>للحصول على أحجام البحث لاحقًا يمكن ربط Google Ads Keyword Planner (اختياري).</div>
+        <div>لاحقًا يمكن ربط Google Ads Keyword Planner (اختياري) لإضافة الأحجام.</div>
       </div>
     </div>
   </div>
 
 <script>
 /* ====================== إعدادات ====================== */
-const WORKER_BASE = 'https://keywords-tool.anasshopify88.workers.dev'; // أو https://keywords.anasrashed.com عند ربط الدومين
+const WORKER_BASE = 'https://keywords-tool.anasshopify88.workers.dev';
 const MAX_COMPETITORS = 3;
-const DEFAULT_MAX_PAGES = 45;
 const CONCURRENCY = 4;
 const PAYMENT_LINK = 'https://anasrashed.com/azqRabz';
 const RETURN_PARAM = 'paid';
 const RETURN_VALUE = '1';
-const ACCESS_CODE_SHA256 = []; // أكواد تفعيل اختيارية
+const ACCESS_CODE_SHA256 = [];
 
 /* ====================== عناصر ====================== */
 const el = sel => document.querySelector(sel);
 const $c1 = el('#c1'), $c2 = el('#c2'), $c3 = el('#c3');
-const $maxPages = el('#maxPages'), $form = el('#form');
+const $form = el('#form');
 const $progress = el('#progress'), $results = el('#results'), $found = el('#foundBadge');
 const $payBtn = el('#payBtn'), $dlCSV = el('#dlCSV'), $dlMD = el('#dlMD');
 const $activate = el('#activateBtn'), $codeInput = el('#codeInput');
@@ -148,10 +145,8 @@ $themeToggle.addEventListener('change', () => {
   localStorage.setItem('ck_theme', t);
 });
 $backBtn.onclick = () => window.history.back();
-$maxPages.value = DEFAULT_MAX_PAGES;
 $payBtn.href = PAYMENT_LINK;
 
-/* فتح التنزيل تلقائيًا عند العودة مع ?paid=1 */
 (function handleReturnParam(){
   const params = new URLSearchParams(location.search);
   if (params.get(RETURN_PARAM) === RETURN_VALUE) localStorage.setItem('ck_paid','1');
@@ -160,7 +155,6 @@ $payBtn.href = PAYMENT_LINK;
 
 /* ====================== أدوات مساعدة ====================== */
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
 function uniq(arr){ return Array.from(new Set(arr)); }
 function byScoreDesc(a,b){ return b.score - a.score; }
 function toCSV(rows){
@@ -184,6 +178,7 @@ async function sha256Hex(str){
 /* ====================== تطبيع + توكنيزر ====================== */
 const AR_STOPWORDS = new Set(["في","وفي","على","من","عن","أن","إن","او","أو","إلى","الى","و","ثم","كما","كان","كانت","يكون","ما","لا","لم","لن","قد","هذه","هذا","هو","هي","هم","هن","ذلك","تلك","أين","أينما","كيف","متى","لما","أي","أيضا","ايضا","كل","حتى","مع","بعد","قبل","بين","أثناء","حيث","لدى","لدي","التي","الذي","الذين","اللذي","اللذين","ذات","نحو","أمام","خلف","فوق","تحت","داخل","خارج","بدون","غير","مثل","عند","إذ","اذ","إذا","اذا","لكن","بل","إنما","أيما","ام","أما","أم","به","بهذا","بها","بهم","ألا","الا","هنا","هناك","منذ","ضمن","جدا","لقد","تم","تمت","ربما","يمكن","لازال","لا زال","لايزال","لا يزال"]);
 const AR_DIAC=/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g, AR_TATWEEL=/\u0640/g;
+const HAS_AR = /\p{Script=Arabic}/u;
 function normalizeArabic(s){
   return s.replace(AR_DIAC,'').replace(AR_TATWEEL,'')
           .replace(/[إأآا]/g,'ا').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ة/g,'ه')
@@ -194,7 +189,7 @@ function tokenize(s){
   return s.split(/\s+/).map(t=>t.replace(/^[\W_]+|[\W_]+$/g,''))
           .filter(t=>t.length>=2 && !/^\d+$/.test(t) && !AR_STOPWORDS.has(t));
 }
-function ngrams(tokens, nmin=1, nmax=5){
+function ngrams(tokens, nmin=2, nmax=5){
   const out=[];
   for(let n=nmin;n<=nmax;n++){
     for(let i=0;i<=tokens.length-n;i++){
@@ -205,11 +200,25 @@ function ngrams(tokens, nmin=1, nmax=5){
   }
   return out;
 }
+const HEX_PAIR_SEQ = /^(?:0x)?[0-9A-Fa-f]{2}(?:\s+(?:0x)?[0-9A-Fa-f]{2})+$/;
+const MOJIBAKE_CHARS = /[ÃØÙÂ¢§]/;
 
-/* ====================== TF-IDF ====================== */
+function isGoodKW(phrase){
+  if (!phrase) return false;
+  if (HEX_PAIR_SEQ.test(phrase)) return false;
+  if (MOJIBAKE_CHARS.test(phrase)) return false;
+  const toks = phrase.split(/\s+/);
+  if (toks.length < 2 || toks.length > 5) return false;
+  if (!HAS_AR.test(phrase)) {
+    if (!toks.some(t=>/^[A-Za-z]{3,}$/.test(t))) return false;
+  }
+  return true;
+}
+
+/* ====================== أوزان الترتيب ====================== */
 function scoreEntry(baseTF, idf, flags){
-  const wTitle = flags.in_title?3:0, wH1=flags.in_h1?2:0, wSlug=flags.in_slug?1.5:0, wAnc=flags.in_anchor?1.2:0;
-  return baseTF * idf * (1 + wTitle + wH1 + wSlug + wAnc);
+  const wTitle = flags.in_title?3:0, wH1=flags.in_h1?2:0, wDesc=flags.in_desc?2:0, wAlt=flags.in_alt?1.5:0, wCat=flags.in_cat?1.5:0;
+  return baseTF * idf * (1 + wTitle + wH1 + wDesc + wAlt + wCat);
 }
 
 /* ====================== اتصال Worker ====================== */
@@ -221,8 +230,10 @@ function canonicalizeInput(v){
   }catch{ return ''; }
 }
 async function fetchJSON(u){ const r = await fetch(u,{headers:{accept:'application/json'}}); if(!r.ok) throw new Error(`HTTP ${r.status}`); return await r.json(); }
-async function fetchSitemap(workerBase, siteOrMap, max){
-  const u = new URL(workerBase + '/sitemap'); u.searchParams.set('url', siteOrMap); u.searchParams.set('max', String(max));
+async function fetchSitemap(workerBase, siteOrMap){
+  const u = new URL(workerBase + '/sitemap'); u.searchParams.set('url', siteOrMap); 
+  // max=0 يعني "كل شيء حتى الحد الأعلى الداخلي للـWorker"
+  u.searchParams.set('max','0');
   return await fetchJSON(u.toString());
 }
 async function fetchPage(workerBase, url){
@@ -230,7 +241,7 @@ async function fetchPage(workerBase, url){
   return await fetchJSON(u.toString());
 }
 
-/* ====================== مجمّع + تحليل ====================== */
+/* ====================== مجمّع + تحليل (حقول محددة فقط) ====================== */
 async function poolAll(urls, workerBase, onTick){
   const results=[]; let idx=0, active=0, done=0;
   return new Promise((resolve)=>{
@@ -246,43 +257,49 @@ async function poolAll(urls, workerBase, onTick){
   });
 }
 
-// ======= هنا التعديل: توليد وتوسيم العبارات بين 2–5 كلمات فقط
 function pageToFields(p){
-  const title=normalizeArabic((p.title||'')), h1s=(p.h1||[]).map(normalizeArabic).join(' ');
-  const anchors=(p.anchors||[]).map(normalizeArabic).join(' '), slug=(p.slugTokens||[]).map(normalizeArabic).join(' ');
-  const text=normalizeArabic((p.text||'')); const all=[title,h1s,anchors,slug,text].filter(Boolean).join(' ');
-  const tok=tokenize(all);
+  // نعتمد فقط على: title/h1 + metaDesc/productDesc + alts + categories
+  const title=normalizeArabic((p.title||'')), 
+        h1s=(p.h1||[]).map(normalizeArabic).join(' '),
+        metaDesc=normalizeArabic((p.metaDesc||'')),
+        productDesc=normalizeArabic((p.productDesc||'')),
+        alts=(p.alts||[]).map(normalizeArabic).join(' '),
+        categories=(p.categories||[]).map(normalizeArabic).join(' ');
 
-  // فقط 2–5 كلمات
-  const grams=ngrams(tok,2,5);
+  const joined=[title,h1s,metaDesc,productDesc,alts,categories].filter(Boolean).join(' ');
+  const tok=tokenize(joined);
+  const grams=ngrams(tok,2,5).filter(isGoodKW);
 
-  const tTok=ngrams(tokenize(title),   2,5),
-        hTok=ngrams(tokenize(h1s),     2,5),
-        sTok=ngrams(tokenize(slug),    2,5),
-        aTok=ngrams(tokenize(anchors), 2,5);
+  // مجموعات وجود
+  const tTok=ngrams(tokenize(title),2,5).filter(isGoodKW),
+        hTok=ngrams(tokenize(h1s),2,5).filter(isGoodKW),
+        dTok=ngrams(tokenize((metaDesc+' '+productDesc).trim()),2,5).filter(isGoodKW),
+        aTok=ngrams(tokenize(alts),2,5).filter(isGoodKW),
+        cTok=ngrams(tokenize(categories),2,5).filter(isGoodKW);
 
-  const inTitle=new Set(tTok), inH1=new Set(hTok), inSlug=new Set(sTok), inAnc=new Set(aTok);
+  const inTitle=new Set(tTok), inH1=new Set(hTok), inDesc=new Set(dTok), inAlt=new Set(aTok), inCat=new Set(cTok);
+
   const tf=new Map(); for(const g of grams){ tf.set(g,(tf.get(g)||0)+1); }
-  return { tf, sets:{inTitle,inH1,inSlug,inAnc} };
+  return { tf, sets:{inTitle,inH1,inDesc,inAlt,inCat} };
 }
 
 function aggregate(pages){
   const DF=new Map(), TF=new Map(), FLAGS=new Map(), SAMPLES=new Map();
-
   const inRange2to5 = (s) => { const c = s.trim().split(/\s+/).filter(Boolean).length; return c>=2 && c<=5; };
 
   for(const pg of pages){
     if(!pg || !pg.ok) continue;
     const {tf, sets}=pageToFields(pg);
     for(const k of tf.keys()){
-      if(!inRange2to5(k)) continue; // ضمان 2–5 كلمات فقط
+      if(!inRange2to5(k) || !isGoodKW(k)) continue;
       DF.set(k,(DF.get(k)||0)+1);
       TF.set(k,(TF.get(k)||0)+tf.get(k));
-      const f=FLAGS.get(k)||{in_title:false,in_h1:false,in_slug:false,in_anchor:false};
+      const f=FLAGS.get(k)||{in_title:false,in_h1:false,in_desc:false,in_alt:false,in_cat:false};
       if(sets.inTitle.has(k)) f.in_title=true;
-      if(sets.inH1.has(k)) f.in_h1=true;
-      if(sets.inSlug.has(k)) f.in_slug=true;
-      if(sets.inAnc.has(k)) f.in_anchor=true;
+      if(sets.inH1.has(k))    f.in_h1=true;
+      if(sets.inDesc.has(k))  f.in_desc=true;
+      if(sets.inAlt.has(k))   f.in_alt=true;
+      if(sets.inCat.has(k))   f.in_cat=true;
       FLAGS.set(k,f);
       const ss=SAMPLES.get(k)||new Set(); if(ss.size<2) ss.add(pg.url); SAMPLES.set(k,ss);
     }
@@ -290,12 +307,12 @@ function aggregate(pages){
   const N=Math.max(1,pages.filter(p=>p&&p.ok).length);
   const out=[];
   for(const [k, tf] of TF.entries()){
-    if(!inRange2to5(k)) continue; // تأكيد إضافي
+    if(!inRange2to5(k) || !isGoodKW(k)) continue;
     const df=DF.get(k)||1; const idf=Math.log((N+1)/(df+1))+1;
-    const flags=FLAGS.get(k)||{in_title:false,in_h1:false,in_slug:false,in_anchor:false};
+    const flags=FLAGS.get(k)||{in_title:false,in_h1:false,in_desc:false,in_alt:false,in_cat:false};
     const score=scoreEntry(tf,idf,flags);
     out.push({ keyword:k, score:+score.toFixed(6), tf, df, pages_count:df,
-      in_title:flags.in_title?1:0, in_h1:flags.in_h1?1:0, in_slug:flags.in_slug?1:0, in_anchor:flags.in_anchor?1:0,
+      in_title:flags.in_title?1:0, in_h1:flags.in_h1?1:0, in_desc:flags.in_desc?1:0, in_alt:flags.in_alt?1:0, in_cat:flags.in_cat?1:0,
       sample_urls:Array.from(SAMPLES.get(k)||[]) });
   }
   out.sort(byScoreDesc); return out;
@@ -319,8 +336,9 @@ function render(list){
         <span>Pages: ${r.pages_count}</span>
         <span class="${r.in_title?'pillOK':'badge'}">in_title: ${r.in_title? '✓':'—'}</span>
         <span class="${r.in_h1?'pillOK':'badge'}">in_h1: ${r.in_h1? '✓':'—'}</span>
-        <span class="${r.in_slug?'pillOK':'badge'}">in_slug: ${r.in_slug? '✓':'—'}</span>
-        <span class="${r.in_anchor?'pillOK':'badge'}">in_anchor: ${r.in_anchor? '✓':'—'}</span>
+        <span class="${r.in_desc?'pillOK':'badge'}">in_desc: ${r.in_desc? '✓':'—'}</span>
+        <span class="${r.in_alt?'pillOK':'badge'}">in_alt: ${r.in_alt? '✓':'—'}</span>
+        <span class="${r.in_cat?'pillOK':'badge'}">in_cat: ${r.in_cat? '✓':'—'}</span>
       </div>
       <div class="urls">${r.sample_urls.map(u=>`<a class="link" href="${u}" target="_blank" rel="noopener">${u}</a>`).join('  ')}</div>`;
     $results.appendChild(div);
@@ -329,8 +347,8 @@ function render(list){
 
 /* CSV / MD */
 function buildCSVRows(items){
-  const header=['keyword','score','tf','df','pages_count','in_title','in_h1','in_slug','in_anchor','sample_urls'];
-  const rows=[header]; for(const r of items){ rows.push([r.keyword,r.score,r.tf,r.df,r.pages_count,r.in_title,r.in_h1,r.in_slug,r.in_anchor,r.sample_urls.join(' ')]); }
+  const header=['keyword','score','tf','df','pages_count','in_title','in_h1','in_desc','in_alt','in_cat','sample_urls'];
+  const rows=[header]; for(const r of items){ rows.push([r.keyword,r.score,r.tf,r.df,r.pages_count,r.in_title,r.in_h1,r.in_desc,r.in_alt,r.in_cat,r.sample_urls.join(' ')]); }
   return rows;
 }
 function buildMarkdown(items){
@@ -338,7 +356,7 @@ function buildMarkdown(items){
   for(const r of items){ const head=r.keyword.split(' ')[0]||r.keyword; if(!groups.has(head)) groups.set(head,[]); groups.get(head).push(r); }
   let md=`# ملخص الموضوعات المستخرجة\n\n`;
   for(const [head,arr] of groups){ const top=arr.slice(0,Math.min(10,arr.length)); md+=`## ${head}\n\n`; for(const r of top){ md+=`- **${r.keyword}** — Score: ${r.score} | صفحات: ${r.pages_count}\n`; } md+=`\n`; }
-  md+=`\n> تمت التوليد من محتوى المنافسين عبر TF-IDF مع أوزان موضعية.\n`; return md;
+  md+=`\n> تمت التوليد من عنوان/وصف/ALT/تصنيفات المنافسين عبر TF-IDF مع أوزان موضعية.\n`; return md;
 }
 $dlCSV.onclick=()=>{ if(localStorage.getItem('ck_paid')!=='1') return; const csv=toCSV(buildCSVRows(ALL_RESULTS)); download('competitors_keywords.csv','text/csv;charset=utf-8',csv); }
 $dlMD.onclick=()=>{ if(localStorage.getItem('ck_paid')!=='1') return; const md=buildMarkdown(ALL_RESULTS); download('competitors_keywords.md','text/markdown;charset=utf-8',md); }
@@ -363,7 +381,6 @@ $form.addEventListener('submit', async (e)=>{
   const inputs=[$c1.value,$c2.value,$c3.value].map(v=>v.trim()).filter(Boolean);
   if(inputs.length===0){ alert('أدخل منافسًا واحدًا على الأقل'); return; }
   if(inputs.length>MAX_COMPETITORS){ alert(`مسموح حتى ${MAX_COMPETITORS} منافسين`); return; }
-  const max=clamp(parseInt($maxPages.value||DEFAULT_MAX_PAGES,10),30,90);
 
   try{
     // 1) خرائط المواقع
@@ -373,11 +390,10 @@ $form.addEventListener('submit', async (e)=>{
       if(!siteOrMap){ alert('تنسيق الإدخال غير صحيح'); return; }
       $progress.textContent=`جاري قراءة خريطة الموقع للمنافس ${i+1} ...`;
       try{
-        const sm=await fetchSitemap(WORKER_BASE, siteOrMap, max);
+        const sm=await fetchSitemap(WORKER_BASE, siteOrMap);
         if(!sm.ok){ throw new Error('sitemap not ok'); }
-        const urls=(sm.urls||[]).slice(0,max);
+        const urls=(sm.urls||[]);
         allUrls=allUrls.concat(urls);
-        // KPIs + Debug
         const b=document.createElement('span'); b.className='badge'; b.textContent=`${new URL(siteOrMap).hostname}: ${urls.length} رابط`;
         $kpis.appendChild(b);
         if((urls.length===0) && sm.debug){ showDebug({ reason:'Empty sitemap urls', input:inputs[i], debug:sm.debug }); }
