@@ -6,48 +6,45 @@
 <title>اعرف الكلمات المفتاحية الخاصة بمنافسيك</title>
 <style>
   :root{
-    --bg:#0b0c0f;--card:#12141a;--text:#e9eef6;--muted:#a9b3c1;--accent:#3b82f6;
-    --ok:#16a34a;--warn:#f59e0b;--error:#ef4444;--border:#222733;--shadow:0 6px 24px rgba(0,0,0,.25)
-  }
-  :root[data-theme="light"]{
-    --bg:#f7f8fb;--card:#fff;--text:#0c1424;--muted:#5b6472;--accent:#2563eb;
+    /* وضع فاتح دائم */
+    --bg:#f7f8fb;--card:#ffffff;--text:#0c1424;--muted:#5b6472;--accent:#2563eb;
     --ok:#15803d;--warn:#d97706;--error:#dc2626;--border:#e6e9f2;--shadow:0 6px 16px rgba(0,0,0,.08)
   }
   html,body{height:100%}
   body{margin:0;font-family:system-ui,Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6}
   .wrap{max-width:1100px;margin:0 auto;padding:20px 16px 80px}
   .topbar{display:flex;align-items:center;justify-content:space-between;gap:8px}
-  .actions{display:flex;gap:8px}
-  .btn{border:1px solid var(--border);background:var(--card);color:var(--text);padding:8px 14px;border-radius:10px;cursor:pointer;box-shadow:var(--shadow)}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{border:1px solid var(--border);background:var(--card);color:var(--text);padding:10px 16px;border-radius:12px;cursor:pointer;box-shadow:var(--shadow);font-weight:600}
   .btn:hover{border-color:var(--accent)} .btn.primary{background:var(--accent);color:#fff;border-color:transparent}
   .titleRow{display:flex;align-items:center;gap:14px}
   .owner{width:64px;height:64px;border-radius:9999px;object-fit:cover;border:1px solid var(--border)}
   h1{margin:0;font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:.2px}
-  .sub{margin-top:4px;color:var(--muted);font-size:13px}
-  .switch{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 14px;box-shadow:var(--shadow)}
+  .sub{margin-top:6px;color:var(--muted);font-size:14px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 16px;box-shadow:var(--shadow)}
   .grid{display:grid;grid-template-columns:1fr;gap:12px}
   .domainRow{display:flex;gap:10px}
-  input[type="text"]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);outline:none}
+  input[type="text"]{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:#fff;color:var(--text);outline:none}
   input::placeholder{color:var(--muted)}
-  .hint{color:var(--muted);font-size:12px;margin-top:6px}
+  .hint{color:var(--muted);font-size:13px;margin-top:8px}
   .kpis{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-  .badge{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px}
+  .badge{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff;color:var(--muted);font-size:12px}
   .progress{margin-top:12px;font-size:13px;color:var(--muted)}
   .list{margin-top:14px;display:grid;gap:10px}
-  .row{border:1px solid var(--border);border-radius:12px;padding:12px;background:rgba(0,0,0,.04)}
-  .row h3{margin:0 0 6px 0;font-size:16px}
-  .kv{display:flex;gap:10px;flex-wrap:wrap}
-  .kv span{font-size:12px;color:var(--muted);border:1px dashed var(--border);padding:4px 8px;border-radius:999px}
-  .urls{margin-top:6px;font-size:12px;direction:ltr}
-  .cta{position:sticky;bottom:0;margin-top:18px;background:var(--card);border:1px solid var(--border);padding:12px;border-radius:12px;display:flex;gap:10px;align-items:center;justify-content:space-between;box-shadow:var(--shadow)}
-  .foot{margin-top:18px;color:var(--muted);font-size:12px;display:grid;gap:8px}
-  .paidBar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .row{border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff}
+  .row h3{margin:0 0 8px 0;font-size:16px}
+  .urls{margin-top:6px;font-size:12px;direction:ltr;word-break:break-all}
+  .paidBar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
   .hide{display:none !important}
-  .pillOK{color:#fff;background:var(--ok);border:0}
-  .pillINFO{color:#fff;background:var(--accent);border:0}
   a.link{color:var(--accent);text-decoration:none}
-  .dbg{margin-top:10px;font-size:12px;color:var(--muted);white-space:pre-wrap;max-height:260px;overflow:auto;border:1px dashed var(--border);border-radius:10px;padding:8px}
+  a.link:hover{text-decoration:underline}
+  .dbg{margin-top:10px;font-size:12px;color:var(--muted);white-space:pre-wrap;max-height:260px;overflow:auto;border:1px dashed var(--border);border-radius:10px;padding:8px;background:#fff}
+  /* CTA: نص ثابت والزر تحته مباشرة + لزج بأسفل الشاشة */
+  .cta{position:sticky;bottom:0;margin-top:18px;background:var(--card);border:1px solid var(--border);padding:14px;border-radius:12px;display:flex;flex-direction:column;gap:10px;align-items:flex-start;box-shadow:var(--shadow)}
+  .cta p{margin:0;font-size:14px}
+  @media (min-width:720px){
+    .paidBar input[type="text"]{max-width:280px}
+  }
 </style>
 </head>
 <body>
@@ -57,10 +54,7 @@
         <button class="btn" id="backBtn">رجوع</button>
         <a class="btn" id="homeBtn" href="https://anasrashed.com" target="_self" rel="noopener">الرئيسية</a>
       </div>
-      <div class="switch">
-        <label for="themeToggle">الوضع الفاتح</label>
-        <input id="themeToggle" type="checkbox" />
-      </div>
+      <!-- الوضع الفاتح دائمًا (تم حذف السويتش) -->
     </div>
 
     <div class="card">
@@ -69,7 +63,7 @@
         <div>
           <h1>اعرف الكلمات المفتاحية الخاصة بمنافسيك</h1>
           <div class="sub">
-            نجلب عبارات من <b>وسم &lt;title&gt; فقط</b> بطول <b>2–5 كلمات</b>، مع <b>ذكاء مُحسّن</b> يستبعد البراند، القوالب المتكررة، الأيام/الأشهر، وضجيج الإعلانات — ونضمن أن العبارة من <b>مقطع واحد</b> وبـ <b>لغة متّسقة</b>.
+            اضف روابط منافسيك (بحد اقصى 3 روابط) واحصل على جميع كلماتهم المفتاحيه
           </div>
         </div>
       </div>
@@ -83,10 +77,10 @@
             <div class="domainRow"><input type="text" id="c2" placeholder="اختياري: منافس ثانٍ"></div>
             <div class="domainRow"><input type="text" id="c3" placeholder="اختياري: منافس ثالث"></div>
             <div class="domainRow">
-              <button type="submit" class="btn primary" id="startBtn">ابدأ التحليل (بدون حد صفحات)</button>
+              <button type="submit" class="btn primary" id="startBtn">ابدأ التحليل</button>
             </div>
           </div>
-          <div class="hint">نحوّل الدومين تلقائيًا إلى /sitemap.xml. حد أعلى آمن: 20,000 رابط لكل منافس.</div>
+          <div class="hint">سيتم فحص 20 ألف صفحة كحد أقصى لكل منافس</div>
           <div class="kpis" id="kpis"></div>
           <div class="progress" id="progress"></div>
           <div class="dbg" id="debugBox" hidden></div>
@@ -96,25 +90,22 @@
       <div class="card">
         <div class="kpis">
           <span class="badge" id="foundBadge">تم العثور على 0 عبارة</span>
-          <span class="badge pillINFO">مجاني: يظهر أعلى 5 فقط</span>
+          <span class="badge" id="freeBadge">5 كلمات مفتاحيه مجانيه</span>
         </div>
+
+        <!-- أزرار التنزيل (تظهر فقط عند الدفع) -->
         <div class="paidBar">
-          <input type="text" id="codeInput" placeholder="رمز الوصول (اختياري)" style="max-width:260px">
-          <button class="btn" id="activateBtn">تفعيل</button>
           <button class="btn hide" id="dlCSV">تنزيل CSV</button>
           <button class="btn hide" id="dlMD">تنزيل Markdown</button>
         </div>
+
         <div id="results" class="list"></div>
+
+        <!-- نص ثابت مع عدد الكلمات ديناميكياً والزر تحته مباشرة -->
         <div class="cta" id="cta">
-          <div>تبغى القائمة كاملة؟ السعر <b>25 ريال</b> لملف CSV كامل جاهز للتنزيل.</div>
+          <p>حمّل جميع الكلمات (<b><span id="kwTotal">0</span></b>) بـ 25 ريال سعودي فقط</p>
           <a class="btn primary" id="payBtn" target="_self" rel="noopener">انتقل إلى صفحة الدفع</a>
         </div>
-      </div>
-
-      <div class="foot">
-        <div>المصدر: <b>عناوين الصفحات (title) فقط</b> — لا نقرأ الوصف/alt/الرابط.</div>
-        <div>لا نرسل بياناتك لأي خادم غير جلب صفحات المنافسين عبر الـWorker.</div>
-        <div>يمكن لاحقًا ربط Keyword Planner لإضافة الأحجام.</div>
       </div>
     </div>
   </div>
@@ -127,7 +118,6 @@ const CONCURRENCY = 4;
 const PAYMENT_LINK = 'https://anasrashed.com/azqRabz';
 const RETURN_PARAM = 'paid';
 const RETURN_VALUE = '1';
-const ACCESS_CODE_SHA256 = [];
 
 const NGRAM_MIN = 2, NGRAM_MAX = 5;
 
@@ -137,24 +127,20 @@ const $c1 = el('#c1'), $c2 = el('#c2'), $c3 = el('#c3');
 const $form = el('#form');
 const $progress = el('#progress'), $results = el('#results'), $found = el('#foundBadge');
 const $payBtn = el('#payBtn'), $dlCSV = el('#dlCSV'), $dlMD = el('#dlMD');
-const $activate = el('#activateBtn'), $codeInput = el('#codeInput');
-const $themeToggle = el('#themeToggle'); const $backBtn = el('#backBtn');
-const $kpis = el('#kpis'); const $debugBox = el('#debugBox');
+const $backBtn = el('#backBtn');
+const $kpis = el('#kpis'); const $debugBox = el('#debugBox'); const $kwTotal = el('#kwTotal');
 
-document.documentElement.setAttribute('data-theme', (localStorage.getItem('ck_theme') || 'dark'));
-$themeToggle.checked = (localStorage.getItem('ck_theme') === 'light');
-$themeToggle.addEventListener('change', () => {
-  const t = $themeToggle.checked ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('ck_theme', t);
-});
 $backBtn.onclick = () => window.history.back();
 $payBtn.href = PAYMENT_LINK;
 
+/* إبراز حالة الدفع عبر باراميتر العودة */
 (function handleReturnParam(){
   const params = new URLSearchParams(location.search);
   if (params.get(RETURN_PARAM) === RETURN_VALUE) localStorage.setItem('ck_paid','1');
-  if (localStorage.getItem('ck_paid') === '1') { $dlCSV.classList.remove('hide'); $dlMD.classList.remove('hide'); }
+  if (localStorage.getItem('ck_paid') === '1') { 
+    $dlCSV.classList.remove('hide'); 
+    $dlMD.classList.remove('hide'); 
+  }
 })();
 
 /* ====================== أدوات مساعدة ====================== */
@@ -171,11 +157,6 @@ function download(name, mime, data){
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click();
   setTimeout(()=>{URL.revokeObjectURL(url);a.remove();}, 0);
-}
-async function sha256Hex(str){
-  const enc = new TextEncoder().encode(str);
-  const buf = await crypto.subtle.digest('SHA-256', enc);
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
 /* ====================== قوائم لغوية/تنظيف ====================== */
@@ -291,13 +272,13 @@ function isGoodKW(phrase){
   const n = toks.length;
   if (n < NGRAM_MIN || n > NGRAM_MAX) return false;
   if (!/[A-Za-z\u0600-\u06FF]/.test(phrase)) return false;
-  if (!languageConsistencyOK(phrase)) return false;            // اتساق اللغة
-  if (toks.some(t=> MONTHS_AR.has(t) || MONTHS_EN.has(t) || DAYS_AR.has(t) || DAYS_EN.has(t))) return false; // استبعاد الأشهر/الأيام أينما ظهرت
-  if (!toks.some(t=>t.length>=4)) return false;                // لازم كلمة طولها ≥4
-  if (toks.some(t=>t.length>30)) return false;                 // كلمات غير طبيعية
-  if (hitNoise(phrase)) return false;                          // عبارات تسويقية عامة
+  if (!languageConsistencyOK(phrase)) return false;
+  if (toks.some(t=> MONTHS_AR.has(t) || MONTHS_EN.has(t) || DAYS_AR.has(t) || DAYS_EN.has(t))) return false;
+  if (!toks.some(t=>t.length>=4)) return false;
+  if (toks.some(t=>t.length>30)) return false;
+  if (hitNoise(phrase)) return false;
   const uniq = new Set(toks.map(t=>t.toLowerCase()));
-  if (uniq.size/n < 0.6) return false;                         // تكرار عالي
+  if (uniq.size/n < 0.6) return false;
   return true;
 }
 
@@ -315,7 +296,7 @@ function keywordLikeness(phrase){
   if (digitRatio   > 0.40) return { ok:false, weight:0 };
   if (uniqRatio    < 0.60) return { ok:false, weight:0 };
 
-  const base = 0.6*lettersRatio + 0.4*uniqRatio;              // (0..1)
+  const base = 0.6*lettersRatio + 0.4*uniqRatio;
   const lenBonus = (toks.length>=4 ? 1.1 : 1.0);
   return { ok:true, weight: base * lenBonus };
 }
@@ -406,12 +387,10 @@ function aggregateSmart(pages){
     N++;
     const noise = new Set([...(boiler.get(it.host)||new Set()), ...(it.brand||new Set())]);
 
-    // قسّم العنوان لمقاطع مستقلّة
     const segments = splitTitleSegments(it.titleRaw);
 
     const seenGram = new Set();
     segments.forEach((seg, segIdx) => {
-      // رمّز المقطع وأزل البراند/البويلر
       const segTokensRaw = tokenizeForHost(seg, it.brand);
       const segTokens = segTokensRaw.filter(t => !noise.has(t));
       if (segTokens.length < NGRAM_MIN) return;
@@ -424,10 +403,8 @@ function aggregateSmart(pages){
         const { ok, weight } = keywordLikeness(phrase);
         if (!ok) continue;
 
-        // تعزيز للمقطع الأول + عبارات تبدأ من أوّل الكلمة بالمقطع
         const segBoost = (segIdx===0 ? 1.20 : 1.00) * (g.start===0 ? 1.05 : 1.00);
 
-        // تجميع إحصاءات
         DF.set(phrase,(DF.get(phrase)||0)+1);
         TF.set(phrase,(TF.get(phrase)||0)+1);
         POSW.set(phrase,(POSW.get(phrase)||0)+segBoost*weight);
@@ -467,49 +444,47 @@ function aggregateSmart(pages){
 /* ====================== عرض ====================== */
 let ALL_RESULTS=[];
 function escapeHTML(s){return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));}
+
+/* واجهة مبسطة: نعرض الكلمة وروابط أمثلة فقط */
 function render(list){
-  const paid=(localStorage.getItem('ck_paid')==='1'); $dlCSV.classList.toggle('hide',!paid); $dlMD.classList.toggle('hide',!paid);
+  const paid=(localStorage.getItem('ck_paid')==='1'); 
+  $dlCSV.classList.toggle('hide',!paid); 
+  $dlMD.classList.toggle('hide',!paid);
+
   $found.textContent=`تم العثور على ${list.length} عبارة`;
-  const show=paid?list:list.slice(0,5); $results.innerHTML='';
+  if ($kwTotal) $kwTotal.textContent = String(list.length);
+
+  const show=paid?list:list.slice(0,5); 
+  $results.innerHTML='';
   for(const r of show){
-    const div=document.createElement('div'); div.className='row';
+    const div=document.createElement('div'); 
+    div.className='row';
     div.innerHTML=`
       <h3>${escapeHTML(r.keyword)}</h3>
-      <div class="kv">
-        <span>Score: ${r.score}</span>
-        <span>TF: ${r.tf}</span>
-        <span>DF: ${r.df}</span>
-        <span>Hosts: ${r.host_df}</span>
-        <span class="pillOK">from_title: ✓</span>
-      </div>
-      <div class="urls">${r.sample_urls.map(u=>`<a class="link" href="${u}" target="_blank" rel="noopener">${u}</a>`).join('  ')}</div>`;
+      <div class="urls">${r.sample_urls.map(u=>`<a class="link" href="${u}" target="_blank" rel="noopener">${u}</a>`).join('  ')}</div>
+    `;
     $results.appendChild(div);
   }
 }
 
-/* CSV / MD */
+/* CSV / MD — أعمدة مبسطة */
 function buildCSVRows(items){
-  const header=['keyword','score','tf','df','pages_count','host_df','from_title','sample_urls'];
-  const rows=[header]; for(const r of items){ rows.push([r.keyword,r.score,r.tf,r.df,r.pages_count,r.host_df,r.in_title,r.sample_urls.join(' ')]); }
+  const header=['keyword','sample_urls'];
+  const rows=[header]; 
+  for(const r of items){ 
+    rows.push([r.keyword, r.sample_urls.join(' ')]);
+  }
   return rows;
 }
 function buildMarkdown(items){
-  const groups=new Map();
-  for(const r of items){ const head=r.keyword.split(' ')[0]||r.keyword; if(!groups.has(head)) groups.set(head,[]); groups.get(head).push(r); }
-  let md=`# ملخص عبارات العنوان (2–5 كلمات)\n\n`;
-  for(const [head,arr] of groups){ const top=arr.slice(0,Math.min(10,arr.length)); md+=`## ${head}\n\n`; for(const r of top){ md+=`- **${r.keyword}** — Score: ${r.score} | صفحات: ${r.pages_count} | دومينات: ${r.host_df}\n`; } md+=`\n`; }
-  md+=`\n> المصدر: وسوم العنوان فقط (TF-IDF + Segment-only + Host coverage + Language consistency).\n`; return md;
+  let md=`# قائمة الكلمات المستخرجة من عناوين الصفحات\n\n`;
+  for(const r of items){
+    md+=`- **${r.keyword}**\n`;
+  }
+  return md;
 }
 $dlCSV.onclick=()=>{ if(localStorage.getItem('ck_paid')!=='1') return; const csv=toCSV(buildCSVRows(ALL_RESULTS)); download('competitors_title_keywords.csv','text/csv;charset=utf-8',csv); }
 $dlMD.onclick=()=>{ if(localStorage.getItem('ck_paid')!=='1') return; const md=buildMarkdown(ALL_RESULTS); download('competitors_title_keywords.md','text/markdown;charset=utf-8',md); }
-
-/* تفعيل برمز */
-$activate.addEventListener('click', async ()=>{
-  const raw=($codeInput.value||'').trim(); if(!raw) return;
-  const hex=await sha256Hex(raw);
-  if(ACCESS_CODE_SHA256.includes(hex)){ localStorage.setItem('ck_paid','1'); $dlCSV.classList.remove('hide'); $dlMD.classList.remove('hide'); alert('تم التفعيل.'); }
-  else{ alert('رمز غير صحيح.'); }
-});
 
 /* ====================== السريان ====================== */
 function showDebug(obj){
@@ -519,6 +494,7 @@ function showDebug(obj){
 $form.addEventListener('submit', async (e)=>{
   e.preventDefault();
   $results.innerHTML=''; $progress.textContent=''; ALL_RESULTS=[]; $found.textContent='تم العثور على 0 عبارة'; $kpis.innerHTML=''; $debugBox.hidden=true;
+  if ($kwTotal) $kwTotal.textContent = '0';
 
   const inputs=[$c1.value,$c2.value,$c3.value].map(v=>v.trim()).filter(Boolean);
   if(inputs.length===0){ alert('أدخل منافسًا واحدًا على الأقل'); return; }
