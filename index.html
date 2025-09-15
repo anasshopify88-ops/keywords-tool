@@ -207,8 +207,9 @@
 
           <!-- CTA داخل التدفق -->
           <div class="cta" id="cta">
-            <p>حمّل جميع الكلمات المفتاحية (<b><span id="kwTotal">0</span></b>) بـ 25 ريال سعودي فقط</p>
+            <p id="ctaText">حمّل جميع الكلمات المفتاحية (<b><span id="kwTotal">0</span></b>) بـ 25 ريال سعودي فقط</p>
             <a class="btn primary" id="payBtn" target="_self" rel="noopener">انتقل إلى صفحة الدفع</a>
+
             <!-- يظهر هذا الشريط بعد الدفع كحل مضمون -->
             <div id="claimBar" class="claimBar hide">
               <p>تم التفعيل. إن لم يبدأ التنزيل تلقائيًا، اضغط هنا:</p>
@@ -250,7 +251,7 @@ const $progress = el('#progress'), $results = el('#results'), $found = el('#foun
 const $payBtn = el('#payBtn'), $dlCSV = el('#dlCSV'), $dlMD = el('#dlMD');
 const $backBtn = el('#backBtn');
 const $kpis = el('#kpis'); const $debugBox = el('#debugBox'); const $kwTotal = el('#kwTotal');
-const $claimBar = el('#claimBar'); const $claimBtn = el('#claimBtn');
+const $claimBar = el('#claimBar'); const $claimBtn = el('#claimBtn'); const $ctaText = el('#ctaText');
 
 $backBtn.onclick = () => window.history.back();
 /* يوجه للسلة */
@@ -264,28 +265,32 @@ $payBtn.setAttribute('href', CART_LINK);
   let paid = false;
   if (params.get(RETURN_PARAM) === RETURN_VALUE) paid = true;
   if (!paid){
-    // قبول صيغ متعددة في الهاش
     if ([...ACCEPT_HASH].some(h => hash.includes(h.replace('#','')))) paid = true;
-    // قبول شكل #paid مباشرة
     if (hash === '#paid' || hash.startsWith('#paid=')) paid = true;
   }
   if (paid) {
     localStorage.setItem(LS_PAID,'1');
   }
   updatePaidUI();
-  // تأجيل المحاولة لمنح المتصفح وقتًا ويقل الحجب
   setTimeout(autoDownloadIfPossible, 600);
 })();
 
-function showClaimBar(show){
-  $claimBar.classList.toggle('hide', !show);
-}
+function showClaimBar(show){ $claimBar.classList.toggle('hide', !show); }
 
 function updatePaidUI(){
   const paid = localStorage.getItem(LS_PAID)==='1';
   $dlCSV.classList.toggle('hide', !paid);
   $dlMD.classList.toggle('hide', !paid);
   showClaimBar(paid);
+
+  // لو مدفوع: أخفِ زر الدفع وغيّر نص الـ CTA
+  if (paid){
+    if ($payBtn) $payBtn.style.display = 'none';
+    if ($ctaText) $ctaText.innerHTML = 'تم التفعيل — بامكانك تنزيل جميع الكلمات الآن.';
+  } else {
+    if ($payBtn) $payBtn.style.display = '';
+    if ($ctaText) $ctaText.innerHTML = `حمّل جميع الكلمات المفتاحية (<b><span id="kwTotal">${$kwTotal ? $kwTotal.textContent : '0'}</span></b>) بـ 25 ريال سعودي فقط`;
+  }
 }
 
 /* ====================== أدوات مساعدة ====================== */
@@ -319,13 +324,11 @@ function loadCachedResults(){
   }catch{ return []; }
 }
 
-/* تنزيل CSV واحد تلقائيًا + إظهار زر الاستلام كحل مضمون */
+/* تنزيل CSV تلقائيًا + زر الاستلام كحل مضمون */
 function buildCSVRows(items){
   const header=['keyword','sample_urls'];
   const rows=[header];
-  for(const r of items){
-    rows.push([r.keyword, (r.sample_urls||[]).join(' ')]);
-  }
+  for(const r of items){ rows.push([r.keyword, (r.sample_urls||[]).join(' ')]); }
   return rows;
 }
 function buildMarkdown(items){
@@ -341,9 +344,7 @@ function tryAutoCSV(list){
   try{
     download(`competitors_keywords-${list.length}-${stamp}.csv`,'text/csv;charset=utf-8',csv);
     return true;
-  }catch{
-    return false;
-  }
+  }catch{ return false; }
 }
 
 function autoDownloadIfPossible(){
@@ -351,11 +352,9 @@ function autoDownloadIfPossible(){
   if (!paid) return;
   const list = (window.ALL_RESULTS && ALL_RESULTS.length) ? ALL_RESULTS : loadCachedResults();
   if (list && list.length){
-    const ok = tryAutoCSV(list);
-    // لو المتصفح منع التنزيل التلقائي، نبين زر الاستلام
+    tryAutoCSV(list);
     showClaimBar(true);
   }else{
-    // لا توجد نتائج محفوظة: فعّل التحميل التلقائي بعد أول تحليل قادم
     localStorage.setItem(LS_AUTODL,'1');
   }
 }
@@ -621,7 +620,7 @@ function aggregateSmart(pages){
 
   const out=[];
   for (const [k, tf] of TF.entries()){
-    const df = tf;
+    const df = tf; // لكل صفحة مرّة
     const idf = Math.log((N+1)/(df+1))+1;
     const hostCoverage = (HOSTS.get(k)||new Set()).size;
     const hostBoost = 1 + Math.min(0.30, 0.10 * (hostCoverage-1));
@@ -762,7 +761,6 @@ $form.addEventListener('submit', async (e)=>{
     // لو العميل دفع قبل التحليل وفعّلنا التحميل التلقائي المؤجل
     if (localStorage.getItem(LS_PAID)==='1' && localStorage.getItem(LS_AUTODL)==='1'){
       localStorage.removeItem(LS_AUTODL);
-      // محاولة فورية + إظهار زر الاستلام
       setTimeout(autoDownloadIfPossible, 300);
     }
   }catch(err){
