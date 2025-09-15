@@ -19,7 +19,7 @@
     /* عرض العمود */
     --sidebar-w:280px;
 
-    /* أحجام أصغر (ضاعفت التصغير) */
+    /* أحجام أصغر */
     --fs-base:13px;
     --fs-sm:11.5px;
     --fs-xs:10.5px;
@@ -53,12 +53,12 @@
   h1{margin:0;font-size:clamp(18px,2.2vw,24px);font-weight:800;letter-spacing:.2px}
   .sub{margin-top:6px;color:var(--muted);font-size:var(--fs-sm)}
 
-  /* التخطيط: العمود الأيسر + صندوق الأداة يمين */
+  /* التخطيط */
   .layout{
     display:grid;
     grid-template-columns: var(--sidebar-w) 1fr;
     gap:14px;
-    align-items:stretch;   /* يساوي الارتفاع بين العمودين */
+    align-items:stretch;
   }
 
   /* يمين: صندوق الأداة */
@@ -92,28 +92,14 @@
   .cta{margin-top:10px;background:linear-gradient(135deg,rgba(37,99,235,.08),rgba(139,92,246,.08));border:1px solid var(--border);padding:10px;border-radius:12px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;box-shadow:var(--shadow)}
   .cta p{margin:0;font-size:13px}
 
-  /* ===== السايدبار (يسار) يطابق ارتفاع يمين — CSS فقط ===== */
-  #sidePanel{
-    display:flex;
-    height:100%;
-    min-height:0;
-    overflow:hidden; /* المحتوى الداخلي يتسكرول داخل البطاقة */
-  }
-  /* نفعّل contain:size فقط على الشاشات العريضة (عمودين) */
-  @media (min-width:981px){
-    #sidePanel{ contain:size; }
-  }
+  /* ===== السايدبار ===== */
+  #sidePanel{ display:flex; height:100%; min-height:0; overflow:hidden; }
+  @media (min-width:981px){ #sidePanel{ contain:size; } }
 
-  .sidebar-card{
-    flex:1 1 auto;
-    height:100%;              /* تملأ ارتفاع العمود */
-    display:flex; flex-direction:column; gap:8px; min-height:0; overflow:auto;
-  }
+  .sidebar-card{ flex:1 1 auto; height:100%; display:flex; flex-direction:column; gap:8px; min-height:0; overflow:auto; }
 
-  /* تصغيرات لطول أقل */
   .avatar{width:96px;height:96px;border-radius:50%;background:#fff;padding:6px;object-fit:contain;object-position:center;border:1px solid var(--border);align-self:center}
   .logo{width:100%; max-width:160px; align-self:center; object-fit:contain; object-position:center; background:#fff; border-radius:12px; border:1px solid var(--border); padding:8px}
-  /* الشعار بجانب العنوان بنفس الحجم الحالي */
   .title-logo{width:160px; max-width:160px; align-self:center}
 
   .s-list{display:grid; gap:6px}
@@ -125,7 +111,6 @@
   .s-item a:hover{transform:translateY(-2px); border-color:#cbd5e1; box-shadow:0 8px 18px rgba(15,23,42,.08)}
   .s-caption{color:var(--muted); font-size:11px; margin-top:-2px; align-self:center}
 
-  /* استجابة */
   @media (max-width: 980px){
     .layout{grid-template-columns: 1fr}
     #sidePanel{height:auto; overflow:visible;}
@@ -150,13 +135,13 @@
           <h1>اعرف الكلمات المفتاحية الخاصة بمنافسيك</h1>
           <div class="sub">أضف حتى 3 روابط منافسين واستخرج جميع كلماتهم المفتاحية من مواقعهم.</div>
         </div>
-        <!-- الشعار منقول إلى يسار العنوان مع الحفاظ على حجمه الأصلي -->
+        <!-- الشعار بجانب العنوان -->
         <img class="logo title-logo" src="https://i.imgur.com/meUEoP7.png" alt="الشعار"
              onerror="this.onerror=null; this.src='https://i.imgur.com/meUEoP7.jpg';">
       </div>
     </div>
 
-    <!-- التخطيط: السايدبار يسار + صندوق الأداة يمين -->
+    <!-- التخطيط -->
     <div class="layout" style="margin-top:12px">
       <!-- العمود الأيسر -->
       <aside id="sidePanel">
@@ -173,11 +158,8 @@
             <div class="s-item"><a href="https://smg.anasrashed.com" target="_blank" rel="noopener">أداة منشئ خريطة الموقع</a></div>
             <div class="s-item"><a href="https://anasrashed.com/blog" target="_blank" rel="noopener">تعلم أكثر</a></div>
             <div class="s-item"><a href="https://anasrashed.com/%D8%AA%D9%88%D8%AB%D9%8A%D9%82-%D8%A7%D9%84%D8%AA%D8%AC%D8%A7%D8%B1%D8%A9-%D8%A7%D9%84%D8%A5%D9%84%D9%83%D8%AA%D8%B1%D9%88%D9%86%D9%8A%D8%A9/page-1494027497" target="_blank" rel="noopener">توثيق التجارة الإلكترونية</a></div>
-            
             <div class="s-item"><a href="https://contact.anasrashed.com" target="_blank" rel="noopener">تواصل معي</a></div>
-            
           </div>
-          <!-- تم إزالة الشعار من السايدبار بعد نقله لصف العنوان -->
         </div>
       </aside>
 
@@ -226,13 +208,25 @@
   </div>
 
 <script>
-/* ====================== الإعدادات الأصلية ====================== */
+/* ====================== الإعدادات ====================== */
 const WORKER_BASE = 'https://keywords-tool.anasshopify88.workers.dev';
 const MAX_COMPETITORS = 3;
 const CONCURRENCY = 4;
-const PAYMENT_LINK = 'https://anasrashed.com/azqRabz';
+
+/* 1) الزر يفتح السلة مباشرة */
+const CART_LINK = 'https://anasrashed.com/cart';
+
+/* 3) التحميل التلقائي بعد الدفع:
+   لازم تضبط رجوع صفحة نجاح الدفع إلى رابط الأداة مع ?paid=1
+   مثال: https://YOUR-TOOL-DOMAIN/?paid=1 */
 const RETURN_PARAM = 'paid';
 const RETURN_VALUE = '1';
+
+/* مفاتيح التخزين المحلي */
+const LS_PAID = 'ck_paid';
+const LS_RESULTS = 'ck_last_results';
+const LS_SAVED_AT = 'ck_last_saved_at';
+const LS_AUTODL = 'ck_autodl';
 
 const NGRAM_MIN = 2, NGRAM_MAX = 5;
 
@@ -246,17 +240,24 @@ const $backBtn = el('#backBtn');
 const $kpis = el('#kpis'); const $debugBox = el('#debugBox'); const $kwTotal = el('#kwTotal');
 
 $backBtn.onclick = () => window.history.back();
-$payBtn.href = PAYMENT_LINK;
+/* يوجه للسلة */
+$payBtn.setAttribute('href', CART_LINK);
 
-/* إبراز حالة الدفع عبر باراميتر العودة */
+/* إبراز حالة الدفع + محاولة التحميل التلقائي */
 (function handleReturnParam(){
   const params = new URLSearchParams(location.search);
-  if (params.get(RETURN_PARAM) === RETURN_VALUE) localStorage.setItem('ck_paid','1');
-  if (localStorage.getItem('ck_paid') === '1') { 
-    $dlCSV.classList.remove('hide'); 
-    $dlMD.classList.remove('hide'); 
+  if (params.get(RETURN_PARAM) === RETURN_VALUE) {
+    localStorage.setItem(LS_PAID,'1');
   }
+  updatePaidUI();
+  autoDownloadIfPossible();
 })();
+
+function updatePaidUI(){
+  const paid = localStorage.getItem(LS_PAID)==='1';
+  $dlCSV.classList.toggle('hide', !paid);
+  $dlMD.classList.toggle('hide', !paid);
+}
 
 /* ====================== أدوات مساعدة ====================== */
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
@@ -272,6 +273,42 @@ function download(name, mime, data){
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click();
   setTimeout(()=>{URL.revokeObjectURL(url);a.remove();}, 0);
+}
+
+/* حفظ/قراءة النتائج للتحمـيل التلقائي بعد الرجوع من الدفع */
+function cacheResults(items){
+  try{
+    localStorage.setItem(LS_RESULTS, JSON.stringify(items||[]));
+    localStorage.setItem(LS_SAVED_AT, String(Date.now()));
+  }catch(_){}
+}
+function loadCachedResults(){
+  try{
+    const raw = localStorage.getItem(LS_RESULTS);
+    return raw ? JSON.parse(raw) : [];
+  }catch{ return []; }
+}
+function doAutoDownloads(list){
+  if (!list || !list.length) return false;
+  const csv = toCSV(buildCSVRows(list));
+  const md = buildMarkdown(list);
+  const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+  download(`competitors_keywords-${list.length}-${stamp}.csv`,'text/csv;charset=utf-8',csv);
+  download(`competitors_keywords-${list.length}-${stamp}.md`,'text/markdown;charset=utf-8',md);
+  return true;
+}
+function autoDownloadIfPossible(){
+  const paid = localStorage.getItem(LS_PAID)==='1';
+  if (!paid) return;
+  // استخدم النتائج الحالية إن وُجدت، وإلا استخدم المحفوظة
+  const list = (window.ALL_RESULTS && ALL_RESULTS.length) ? ALL_RESULTS : loadCachedResults();
+  if (list && list.length){
+    doAutoDownloads(list);
+    localStorage.removeItem(LS_AUTODL);
+  }else{
+    // ما في نتائج محفوظة حالياً: فعّل التحميل التلقائي بعد أول تحليل قادم
+    localStorage.setItem(LS_AUTODL,'1');
+  }
 }
 
 /* ====================== قوائم لغوية/تنظيف ====================== */
@@ -359,7 +396,7 @@ function ngrams(tokens, nmin=NGRAM_MIN, nmax=NGRAM_MAX){
   return out;
 }
 
-/* ====================== فلاتر ووزن «الكلموية» ====================== */
+/* ====================== فلاتر ووزن ====================== */
 function dominantScriptRatios(s){
   const letters = Array.from(s).filter(ch => /[A-Za-z\u0600-\u06FF]/u.test(ch));
   let ar=0,en=0;
@@ -464,7 +501,7 @@ function preparePages(pages){
   return infos;
 }
 
-/* استخراج “ضجيج” العنوان المتكرر لكل دومين (Boilerplate) */
+/* استخراج «ضجيج» الدومين */
 function buildHostBoilerTokens(infos, freq=0.60){
   const hostTokenFreq = new Map();
   const hostPageCount = new Map();
@@ -490,18 +527,17 @@ function buildHostBoilerTokens(infos, freq=0.60){
   return { boiler, hostPageCount };
 }
 
-/* ====================== التجميع الذكي (مقاطع العنوان فقط) ====================== */
+/* ====================== التجميع الذكي ====================== */
 function aggregateSmart(pages){
   const infos = preparePages(pages);
   const { boiler } = buildHostBoilerTokens(infos, 0.60);
 
-  const DF=new Map(), TF=new Map(), FLAGS=new Map(), SAMPLES=new Map(), HOSTS=new Map(), POSW=new Map();
+  const DF=new Map(), TF=new Map(), SAMPLES=new Map(), HOSTS=new Map(), POSW=new Map();
   let N = 0;
 
   for (const it of infos){
     N++;
     const noise = new Set([...(boiler.get(it.host)||new Set()), ...(it.brand||new Set())]);
-
     const segments = splitTitleSegments(it.titleRaw);
 
     const seenGram = new Set();
@@ -514,17 +550,18 @@ function aggregateSmart(pages){
       for (const g of grams){
         const phrase = g.text;
         if (seenGram.has(phrase)) continue;
+
         if (!isGoodKW(phrase)) continue;
         const { ok, weight } = keywordLikeness(phrase);
         if (!ok) continue;
 
         const segBoost = (segIdx===0 ? 1.20 : 1.00) * (g.start===0 ? 1.05 : 1.00);
 
-        DF.set(phrase,(DF.get(phrase)||0)+1);
-        TF.set(phrase,(TF.get(phrase)||0)+1);
-        POSW.set(phrase,(POSW.get(phrase)||0)+segBoost*weight);
+        const prev = TF.get(phrase)||0;
+        TF.set(phrase, prev+1);
+        const poswPrev = POSW.get(phrase)||0;
+        POSW.set(phrase, poswPrev + segBoost*weight);
 
-        FLAGS.set(phrase,{in_title:1});
         const ss=SAMPLES.get(phrase)||new Set(); if(ss.size<2) ss.add(it.url); SAMPLES.set(phrase,ss);
         const hs=HOSTS.get(phrase)||new Set(); hs.add(it.host); HOSTS.set(phrase,hs);
 
@@ -535,7 +572,7 @@ function aggregateSmart(pages){
 
   const out=[];
   for (const [k, tf] of TF.entries()){
-    const df = DF.get(k)||1;
+    const df = tf; // لأننا نزيد مرة لكل صفحة (مقاربة مبسطة)
     const idf = Math.log((N+1)/(df+1))+1;
     const hostCoverage = (HOSTS.get(k)||new Set()).size;
     const hostBoost = 1 + Math.min(0.30, 0.10 * (hostCoverage-1));
@@ -567,9 +604,8 @@ function escapeHTML(s){
     .replace(/'/g,'&#39;');
 }
 
-/* واجهة مبسطة: نعرض الكلمة وروابط أمثلة فقط */
 function render(list){
-  const paid=(localStorage.getItem('ck_paid')==='1'); 
+  const paid=(localStorage.getItem(LS_PAID)==='1'); 
   $dlCSV.classList.toggle('hide',!paid); 
   $dlMD.classList.toggle('hide',!paid);
 
@@ -589,7 +625,7 @@ function render(list){
   }
 }
 
-/* CSV / MD — أعمدة مبسطة */
+/* CSV / MD */
 function buildCSVRows(items){
   const header=['keyword','sample_urls'];
   const rows=[header]; 
@@ -605,8 +641,8 @@ function buildMarkdown(items){
   }
   return md;
 }
-$dlCSV.onclick=()=>{ if(localStorage.getItem('ck_paid')!=='1') return; const csv=toCSV(buildCSVRows(ALL_RESULTS)); download('competitors_title_keywords.csv','text/csv;charset=utf-8',csv); }
-$dlMD.onclick=()=>{ if(localStorage.getItem('ck_paid')!=='1') return; const md=buildMarkdown(ALL_RESULTS); download('competitors_title_keywords.md','text/markdown;charset=utf-8',md); }
+$dlCSV.onclick=()=>{ if(localStorage.getItem(LS_PAID)!=='1') return; const csv=toCSV(buildCSVRows(ALL_RESULTS)); download('competitors_title_keywords.csv','text/csv;charset=utf-8',csv); }
+$dlMD.onclick=()=>{ if(localStorage.getItem(LS_PAID)!=='1') return; const md=buildMarkdown(ALL_RESULTS); download('competitors_title_keywords.md','text/markdown;charset=utf-8',md); }
 
 /* ====================== السريان ====================== */
 function showDebug(obj){
@@ -656,8 +692,18 @@ $form.addEventListener('submit', async (e)=>{
     // 3) تحليل ذكي — Title فقط
     $progress.textContent='جاري التحليل…'; await sleep(50);
     ALL_RESULTS=aggregateSmart(pages);
+
+    // حفظ النتائج للاستخدام بعد الدفع
+    cacheResults(ALL_RESULTS);
+
+    // عرض
     render(ALL_RESULTS);
     $progress.textContent='اكتمل التحليل.';
+
+    // لو العميل دفع قبل التحليل وفعّلنا التحميل التلقائي المؤجل
+    if (localStorage.getItem(LS_PAID)==='1' && localStorage.getItem(LS_AUTODL)==='1'){
+      autoDownloadIfPossible();
+    }
   }catch(err){
     showDebug({ reason:'top-level error', error:String(err) });
     alert('حدث خطأ غير متوقع. راجع صندوق التشخيص أسفل النموذج.');
