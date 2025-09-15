@@ -4,114 +4,222 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>اعرف الكلمات المفتاحية الخاصة بمنافسيك</title>
+
+<!-- خط عربي جميل -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+
 <style>
   :root{
-    /* وضع فاتح دائم */
-    --bg:#f7f8fb;--card:#ffffff;--text:#0c1424;--muted:#5b6472;--accent:#2563eb;
-    --ok:#15803d;--warn:#d97706;--error:#dc2626;--border:#e6e9f2;--shadow:0 6px 16px rgba(0,0,0,.08)
+    /* ثيم فاتح */
+    --bg:#f7f8fb; --bg-2:#f1f5fb; --card:#ffffff; --text:#0c1424; --muted:#5b6472; --accent:#2563eb;
+    --ok:#15803d; --warn:#d97706; --error:#dc2626; --border:#e6e9f2; --shadow:0 6px 16px rgba(0,0,0,.08);
+    --radius:16px; --radius-sm:12px;
+
+    /* عرض العمود */
+    --sidebar-w:280px;
+
+    /* أحجام أصغر (ضاعفت التصغير) */
+    --fs-base:13px;
+    --fs-sm:11.5px;
+    --fs-xs:10.5px;
   }
+
+  *{box-sizing:border-box}
   html,body{height:100%}
-  body{margin:0;font-family:system-ui,Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6}
-  .wrap{max-width:1100px;margin:0 auto;padding:20px 16px 80px}
-  .topbar{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  body{
+    margin:0; font-family:"Cairo",system-ui,Arial,Helvetica,sans-serif; line-height:1.65;
+    background:linear-gradient(180deg,var(--bg),var(--bg-2)); color:var(--text);
+    -webkit-font-smoothing:antialiased; overflow-x:hidden; font-size:var(--fs-base);
+  }
+
+  .wrap{max-width:1200px;margin:0 auto;padding:24px 16px 64px}
+
+  /* الشريط العلوي */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
   .actions{display:flex;gap:8px;flex-wrap:wrap}
-  .btn{border:1px solid var(--border);background:var(--card);color:var(--text);padding:10px 16px;border-radius:12px;cursor:pointer;box-shadow:var(--shadow);font-weight:600}
-  .btn:hover{border-color:var(--accent)} .btn.primary{background:var(--accent);color:#fff;border-color:transparent}
-  .titleRow{display:flex;align-items:center;gap:14px}
-  .owner{width:64px;height:64px;border-radius:9999px;object-fit:cover;border:1px solid var(--border)}
-  h1{margin:0;font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:.2px}
-  .sub{margin-top:6px;color:var(--muted);font-size:14px}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 16px;box-shadow:var(--shadow)}
-  .grid{display:grid;grid-template-columns:1fr;gap:12px}
-  .domainRow{display:flex;gap:10px}
-  input[type="text"]{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:#fff;color:var(--text);outline:none}
-  input::placeholder{color:var(--muted)}
-  .hint{color:var(--muted);font-size:13px;margin-top:8px}
-  .kpis{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-  .badge{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff;color:var(--muted);font-size:12px}
-  .progress{margin-top:12px;font-size:13px;color:var(--muted)}
-  .list{margin-top:14px;display:grid;gap:10px}
-  .row{border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff}
-  .row h3{margin:0 0 8px 0;font-size:16px}
-  .urls{margin-top:6px;font-size:12px;direction:ltr;word-break:break-all}
-  .paidBar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+  .btn{
+    border:1px solid var(--border); background:linear-gradient(180deg,#fff,#f9fbff);
+    color:var(--text); padding:8px 12px; border-radius:14px; cursor:pointer; font-weight:700; box-shadow:var(--shadow);
+    transition:transform .18s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+    font-size:12px;
+  }
+  .btn:hover{transform:translateY(-2px); border-color:#cbd5e1}
+  .btn.primary{background:linear-gradient(135deg,#2563eb,#8b5cf6); color:#fff; border-color:transparent}
+
+  /* بطاقات */
+  .card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:14px; box-shadow:var(--shadow)}
+  .titleRow{display:flex;align-items:center;gap:10px}
+  h1{margin:0;font-size:clamp(18px,2.2vw,24px);font-weight:800;letter-spacing:.2px}
+  .sub{margin-top:6px;color:var(--muted);font-size:var(--fs-sm)}
+
+  /* التخطيط: العمود الأيسر + صندوق الأداة يمين */
+  .layout{
+    display:grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    gap:14px;
+    align-items:stretch;   /* يساوي الارتفاع بين العمودين */
+  }
+
+  /* يمين: صندوق الأداة */
+  #toolBox{display:flex; flex-direction:column; gap:10px; min-height:0}
+
+  /* حقول */
+  .grid{display:grid; grid-template-columns:1fr; gap:10px}
+  .domainRow{display:flex; gap:8px}
+  input[type="text"]{
+    width:100%; padding:10px; border-radius:12px; border:1px solid var(--border);
+    background:#fff; color:#0c1424; outline:none; font-size:13px;
+  }
+  input::placeholder{color:#8a93a3}
+  .hint{color:var(--muted);font-size:var(--fs-sm);margin-top:6px}
+  .kpis{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .badge{padding:5px 9px;border-radius:999px;border:1px solid var(--border);background:#fff;color:#6b7280;font-size:var(--fs-xs)}
+  .progress{margin-top:8px;font-size:var(--fs-sm);color:#6b7280}
+
+  .list{margin-top:8px;display:grid;gap:8px}
+  .row{border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}
+  .row h3{margin:0 0 6px 0;font-size:14px}
+  .urls{margin-top:4px;font-size:10.5px;direction:ltr;word-break:break-all}
+  .paidBar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
   .hide{display:none !important}
   a.link{color:var(--accent);text-decoration:none}
   a.link:hover{text-decoration:underline}
-  .dbg{margin-top:10px;font-size:12px;color:var(--muted);white-space:pre-wrap;max-height:260px;overflow:auto;border:1px dashed var(--border);border-radius:10px;padding:8px;background:#fff}
-  /* CTA: نص ثابت والزر تحته مباشرة + لزج بأسفل الشاشة */
-  .cta{position:sticky;bottom:0;margin-top:18px;background:var(--card);border:1px solid var(--border);padding:14px;border-radius:12px;display:flex;flex-direction:column;gap:10px;align-items:flex-start;box-shadow:var(--shadow)}
-  .cta p{margin:0;font-size:14px}
-  @media (min-width:720px){
-    .paidBar input[type="text"]{max-width:280px}
+
+  .dbg{margin-top:8px;font-size:11.5px;color:#59657a;white-space:pre-wrap;max-height:240px;overflow:auto;border:1px dashed var(--border);border-radius:10px;padding:8px;background:#fff}
+
+  /* CTA */
+  .cta{margin-top:10px;background:linear-gradient(135deg,rgba(37,99,235,.08),rgba(139,92,246,.08));border:1px solid var(--border);padding:10px;border-radius:12px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;box-shadow:var(--shadow)}
+  .cta p{margin:0;font-size:13px}
+
+  /* ===== السايدبار (يسار) يطابق ارتفاع يمين — CSS فقط ===== */
+  #sidePanel{
+    display:flex;
+    height:100%;
+    min-height:0;
+    overflow:hidden; /* المحتوى الداخلي يتسكرول داخل البطاقة */
+  }
+  /* نفعّل contain:size فقط على الشاشات العريضة (عمودين) */
+  @media (min-width:981px){
+    #sidePanel{ contain:size; }
+  }
+
+  .sidebar-card{
+    flex:1 1 auto;
+    height:100%;              /* تملأ ارتفاع العمود */
+    display:flex; flex-direction:column; gap:8px; min-height:0; overflow:auto;
+  }
+
+  /* تصغيرات لطول أقل */
+  .avatar{width:96px;height:96px;border-radius:50%;background:#fff;padding:6px;object-fit:contain;object-position:center;border:1px solid var(--border);align-self:center}
+  .logo{width:100%; max-width:160px; align-self:center; object-fit:contain; object-position:center; background:#fff; border-radius:12px; border:1px solid var(--border); padding:8px}
+  .s-list{display:grid; gap:6px}
+  .s-item a{
+    display:block; padding:7px 9px; border:1px solid var(--border); border-radius:12px; background:#fff;
+    color:#0f172a; text-decoration:none; font-weight:600; transition:transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+    box-shadow:0 4px 12px rgba(15,23,42,.05); font-size:12.5px;
+  }
+  .s-item a:hover{transform:translateY(-2px); border-color:#cbd5e1; box-shadow:0 8px 18px rgba(15,23,42,.08)}
+  .s-caption{color:var(--muted); font-size:11px; margin-top:-2px; align-self:center}
+
+  /* استجابة */
+  @media (max-width: 980px){
+    .layout{grid-template-columns: 1fr}
+    #sidePanel{height:auto; overflow:visible;}
+    .avatar{width:104px;height:104px}
   }
 </style>
 </head>
 <body>
   <div class="wrap">
+    <!-- توب بار -->
     <div class="topbar">
       <div class="actions">
         <button class="btn" id="backBtn">رجوع</button>
         <a class="btn" id="homeBtn" href="https://anasrashed.com" target="_self" rel="noopener">الرئيسية</a>
       </div>
-      <!-- الوضع الفاتح دائمًا (تم حذف السويتش) -->
     </div>
 
+    <!-- عنوان -->
     <div class="card">
       <div class="titleRow">
-        <img class="owner" src="https://anasrashed.com/ZqyGaBZ" alt="المالك">
         <div>
           <h1>اعرف الكلمات المفتاحية الخاصة بمنافسيك</h1>
-          <div class="sub">
-            اضف روابط منافسيك (بحد اقصى 3 روابط) واحصل على جميع كلماتهم المفتاحيه
-          </div>
+          <div class="sub">أضف حتى 3 روابط منافسين واستخرج جميع كلماتهم المفتاحية من مواقعهم.</div>
         </div>
       </div>
     </div>
 
-    <div class="grid" style="margin-top:12px">
-      <div class="card">
-        <form id="form">
-          <div class="grid">
-            <div class="domainRow"><input type="text" id="c1" placeholder="example.com أو https://example.com/sitemap.xml"></div>
-            <div class="domainRow"><input type="text" id="c2" placeholder="اختياري: منافس ثانٍ"></div>
-            <div class="domainRow"><input type="text" id="c3" placeholder="اختياري: منافس ثالث"></div>
-            <div class="domainRow">
-              <button type="submit" class="btn primary" id="startBtn">ابدأ التحليل</button>
-            </div>
+    <!-- التخطيط: السايدبار يسار + صندوق الأداة يمين -->
+    <div class="layout" style="margin-top:12px">
+      <!-- العمود الأيسر -->
+      <aside id="sidePanel">
+        <div class="card sidebar-card">
+          <img class="avatar" src="https://i.imgur.com/B3UkEQ0.jpg" alt="صورتي" referrerpolicy="no-referrer"
+               onerror="this.onerror=null; this.src='https://i.imgur.com/B3UkEQ0.png';">
+          <div class="s-list">
+            <div class="s-item"><a href="https://whoami.anasrashed.com" target="_blank" rel="noopener">من أنا؟</a></div>
+            <div class="s-item"><a href="https://anasrashed.com/wAXpVym" target="_blank" rel="noopener">دليل السيو الشامل</a></div>
+            <div class="s-item"><a href="https://anasrashed.com/eQvbbqP" target="_blank" rel="noopener">أفضل باك لينك</a></div>
+            <div class="s-item"><a href="https://anasrashed.com/NApDQYD" target="_blank" rel="noopener">حملة باك لينك شهرية</a></div>
+            <div class="s-item"><a href="https://anasrashed.com/ZqyGaBZ" target="_blank" rel="noopener">حل مشكلة خريطة الموقع للباقة بلس</a></div>
+            <div class="s-item"><a href="https://serp.anasrashed.com" target="_blank" rel="noopener">أداة SERP بالذكاء الإصطناعي</a></div>
+            <div class="s-item"><a href="https://smg.anasrashed.com" target="_blank" rel="noopener">أداة منشئ خريطة الموقع</a></div>
+            <div class="s-item"><a href="https://anasrashed.com/blog" target="_blank" rel="noopener">تعلم أكثر</a></div>
+            <div class="s-item"><a href="https://contact.anasrashed.com" target="_blank" rel="noopener">تواصل معي</a></div>
+            <div class="s-item"><a href="https://anasrashed.com/%D8%AA%D9%88%D8%AB%D9%8A%D9%82-%D8%A7%D9%84%D8%AA%D8%AC%D8%A7%D8%B1%D8%A9-%D8%A7%D9%84%D8%A5%D9%84%D9%83%D8%AA%D8%B1%D9%88%D9%86%D9%8A%D8%A9/page-1494027497" target="_blank" rel="noopener">توثيق التجارة الإلكترونية</a></div>
           </div>
-          <div class="hint">سيتم فحص 20 ألف صفحة كحد أقصى لكل منافس</div>
-          <div class="kpis" id="kpis"></div>
-          <div class="progress" id="progress"></div>
-          <div class="dbg" id="debugBox" hidden></div>
-        </form>
-      </div>
+          <img class="logo" src="https://i.imgur.com/meUEoP7.png" alt="الشعار"
+               onerror="this.onerror=null; this.src='https://i.imgur.com/meUEoP7.jpg';">
+        </div>
+      </aside>
 
-      <div class="card">
-        <div class="kpis">
-          <span class="badge" id="foundBadge">تم العثور على 0 عبارة</span>
-          <span class="badge" id="freeBadge">5 كلمات مفتاحيه مجانيه</span>
+      <!-- يمين: صندوق الأداة الكامل -->
+      <section id="toolBox">
+        <!-- بطاقة النموذج -->
+        <div class="card">
+          <form id="form">
+            <div class="grid">
+              <div class="domainRow"><input type="text" id="c1" placeholder="https://example.com/sitemap.xml أو example.com"></div>
+              <div class="domainRow"><input type="text" id="c2" placeholder="اختياري: منافس ثانٍ"></div>
+              <div class="domainRow"><input type="text" id="c3" placeholder="اختياري: منافس ثالث"></div>
+              <div class="domainRow">
+                <button type="submit" class="btn primary" id="startBtn">ابدأ التحليل</button>
+              </div>
+            </div>
+            <div class="hint">سيتم فحص 20 ألف صفحة كحد أقصى لكل منافس</div>
+            <div class="kpis" id="kpis"></div>
+            <div class="progress" id="progress"></div>
+            <div class="dbg" id="debugBox" hidden></div>
+          </form>
         </div>
 
-        <!-- أزرار التنزيل (تظهر فقط عند الدفع) -->
-        <div class="paidBar">
-          <button class="btn hide" id="dlCSV">تنزيل CSV</button>
-          <button class="btn hide" id="dlMD">تنزيل Markdown</button>
-        </div>
+        <!-- بطاقة النتائج -->
+        <div class="card">
+          <div class="kpis">
+            <span class="badge" id="foundBadge">تم العثور على 0 كلمة مفتاحية</span>
+            <span class="badge" id="freeBadge">5 كلمات مفتاحيه مجانيه</span>
+          </div>
 
-        <div id="results" class="list"></div>
+          <div class="paidBar">
+            <button class="btn hide" id="dlCSV">تنزيل CSV</button>
+            <button class="btn hide" id="dlMD">تنزيل Markdown</button>
+          </div>
 
-        <!-- نص ثابت مع عدد الكلمات ديناميكياً والزر تحته مباشرة -->
-        <div class="cta" id="cta">
-          <p>حمّل جميع الكلمات (<b><span id="kwTotal">0</span></b>) بـ 25 ريال سعودي فقط</p>
-          <a class="btn primary" id="payBtn" target="_self" rel="noopener">انتقل إلى صفحة الدفع</a>
+          <div id="results" class="list"></div>
+
+          <!-- CTA داخل التدفق -->
+          <div class="cta" id="cta">
+            <p>حمّل جميع الكلمات المفتاحية (<b><span id="kwTotal">0</span></b>) بـ 25 ريال سعودي فقط</p>
+            <a class="btn primary" id="payBtn" target="_self" rel="noopener">انتقل إلى صفحة الدفع</a>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   </div>
 
 <script>
-/* ====================== إعدادات ====================== */
+/* ====================== الإعدادات الأصلية ====================== */
 const WORKER_BASE = 'https://keywords-tool.anasshopify88.workers.dev';
 const MAX_COMPETITORS = 3;
 const CONCURRENCY = 4;
@@ -443,7 +551,14 @@ function aggregateSmart(pages){
 
 /* ====================== عرض ====================== */
 let ALL_RESULTS=[];
-function escapeHTML(s){return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));}
+function escapeHTML(s){
+  return s
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
 
 /* واجهة مبسطة: نعرض الكلمة وروابط أمثلة فقط */
 function render(list){
@@ -531,7 +646,7 @@ $form.addEventListener('submit', async (e)=>{
     const fails=pages.filter(p=>!p||!p.ok);
     if(fails.length===pages.length){ showDebug({ reason:'all page fetches failed', sample:fails.slice(0,5) }); }
 
-    // 3) تحليل ذكي — Title فقط (داخل المقطع)
+    // 3) تحليل ذكي — Title فقط
     $progress.textContent='جاري التحليل…'; await sleep(50);
     ALL_RESULTS=aggregateSmart(pages);
     render(ALL_RESULTS);
