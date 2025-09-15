@@ -92,14 +92,6 @@
   .cta{margin-top:10px;background:linear-gradient(135deg,rgba(37,99,235,.08),rgba(139,92,246,.08));border:1px solid var(--border);padding:10px;border-radius:12px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;box-shadow:var(--shadow)}
   .cta p{margin:0;font-size:13px}
 
-  /* شريط استلام الملف بعد الدفع */
-  .claimBar{
-    position:sticky; bottom:12px; inset-inline:0; margin-top:10px;
-    display:flex; gap:8px; align-items:center; justify-content:space-between;
-    background:#fff; border:1px solid var(--border); border-radius:12px; padding:10px; box-shadow:var(--shadow)
-  }
-  .claimBar p{margin:0; font-size:12.5px; color:#0c1424}
-
   /* ===== السايدبار ===== */
   #sidePanel{ display:flex; height:100%; min-height:0; overflow:hidden; }
   @media (min-width:981px){ #sidePanel{ contain:size; } }
@@ -207,14 +199,8 @@
 
           <!-- CTA داخل التدفق -->
           <div class="cta" id="cta">
-            <p id="ctaText">حمّل جميع الكلمات المفتاحية (<b><span id="kwTotal">0</span></b>) بـ 25 ريال سعودي فقط</p>
+            <p>حمّل جميع الكلمات المفتاحية (<b><span id="kwTotal">0</span></b>) بـ 25 ريال سعودي فقط</p>
             <a class="btn primary" id="payBtn" target="_self" rel="noopener">انتقل إلى صفحة الدفع</a>
-
-            <!-- يظهر هذا الشريط بعد الدفع كحل مضمون -->
-            <div id="claimBar" class="claimBar hide">
-              <p>تم التفعيل. إن لم يبدأ التنزيل تلقائيًا، اضغط هنا:</p>
-              <button class="btn primary" id="claimBtn">استلام الملف الآن</button>
-            </div>
           </div>
         </div>
       </section>
@@ -227,13 +213,14 @@ const WORKER_BASE = 'https://keywords-tool.anasshopify88.workers.dev';
 const MAX_COMPETITORS = 3;
 const CONCURRENCY = 4;
 
-/* رابط الدفع/السلة (اضبطه لما تريد) */
+/* 1) الزر يفتح السلة مباشرة */
 const CART_LINK = 'https://anasrashed.com/cart';
 
-/* تفعيل الدفع عند الرجوع: نقبل query أو hash */
+/* 3) التحميل التلقائي بعد الدفع:
+   لازم تضبط رجوع صفحة نجاح الدفع إلى رابط الأداة مع ?paid=1
+   مثال: https://YOUR-TOOL-DOMAIN/?paid=1 */
 const RETURN_PARAM = 'paid';
 const RETURN_VALUE = '1';
-const ACCEPT_HASH = new Set(['#paid','#success','#ok','#done','#thanks','#autodl=1']);
 
 /* مفاتيح التخزين المحلي */
 const LS_PAID = 'ck_paid';
@@ -251,46 +238,25 @@ const $progress = el('#progress'), $results = el('#results'), $found = el('#foun
 const $payBtn = el('#payBtn'), $dlCSV = el('#dlCSV'), $dlMD = el('#dlMD');
 const $backBtn = el('#backBtn');
 const $kpis = el('#kpis'); const $debugBox = el('#debugBox'); const $kwTotal = el('#kwTotal');
-const $claimBar = el('#claimBar'); const $claimBtn = el('#claimBtn'); const $ctaText = el('#ctaText');
 
 $backBtn.onclick = () => window.history.back();
 /* يوجه للسلة */
 $payBtn.setAttribute('href', CART_LINK);
 
-/* إبراز حالة الدفع + محاولة التحميل (محسّنة) */
+/* إبراز حالة الدفع + محاولة التحميل التلقائي */
 (function handleReturnParam(){
   const params = new URLSearchParams(location.search);
-  const hash = (location.hash || '').toLowerCase();
-
-  let paid = false;
-  if (params.get(RETURN_PARAM) === RETURN_VALUE) paid = true;
-  if (!paid){
-    if ([...ACCEPT_HASH].some(h => hash.includes(h.replace('#','')))) paid = true;
-    if (hash === '#paid' || hash.startsWith('#paid=')) paid = true;
-  }
-  if (paid) {
+  if (params.get(RETURN_PARAM) === RETURN_VALUE) {
     localStorage.setItem(LS_PAID,'1');
   }
   updatePaidUI();
-  setTimeout(autoDownloadIfPossible, 600);
+  autoDownloadIfPossible();
 })();
-
-function showClaimBar(show){ $claimBar.classList.toggle('hide', !show); }
 
 function updatePaidUI(){
   const paid = localStorage.getItem(LS_PAID)==='1';
   $dlCSV.classList.toggle('hide', !paid);
   $dlMD.classList.toggle('hide', !paid);
-  showClaimBar(paid);
-
-  // لو مدفوع: أخفِ زر الدفع وغيّر نص الـ CTA
-  if (paid){
-    if ($payBtn) $payBtn.style.display = 'none';
-    if ($ctaText) $ctaText.innerHTML = 'تم التفعيل — بامكانك تنزيل جميع الكلمات الآن.';
-  } else {
-    if ($payBtn) $payBtn.style.display = '';
-    if ($ctaText) $ctaText.innerHTML = `حمّل جميع الكلمات المفتاحية (<b><span id="kwTotal">${$kwTotal ? $kwTotal.textContent : '0'}</span></b>) بـ 25 ريال سعودي فقط`;
-  }
 }
 
 /* ====================== أدوات مساعدة ====================== */
@@ -305,8 +271,7 @@ function toCSV(rows){
 function download(name, mime, data){
   const blob = new Blob([data], {type: mime});
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a);
-  a.click();
+  const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click();
   setTimeout(()=>{URL.revokeObjectURL(url);a.remove();}, 0);
 }
 
@@ -323,38 +288,25 @@ function loadCachedResults(){
     return raw ? JSON.parse(raw) : [];
   }catch{ return []; }
 }
-
-/* تنزيل CSV تلقائيًا + زر الاستلام كحل مضمون */
-function buildCSVRows(items){
-  const header=['keyword','sample_urls'];
-  const rows=[header];
-  for(const r of items){ rows.push([r.keyword, (r.sample_urls||[]).join(' ')]); }
-  return rows;
-}
-function buildMarkdown(items){
-  let md=`# قائمة الكلمات المستخرجة من عناوين الصفحات\n\n`;
-  for(const r of items){ md+=`- **${r.keyword}**\n`; }
-  return md;
-}
-
-function tryAutoCSV(list){
+function doAutoDownloads(list){
   if (!list || !list.length) return false;
   const csv = toCSV(buildCSVRows(list));
+  const md = buildMarkdown(list);
   const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
-  try{
-    download(`competitors_keywords-${list.length}-${stamp}.csv`,'text/csv;charset=utf-8',csv);
-    return true;
-  }catch{ return false; }
+  download(`competitors_keywords-${list.length}-${stamp}.csv`,'text/csv;charset=utf-8',csv);
+  download(`competitors_keywords-${list.length}-${stamp}.md`,'text/markdown;charset=utf-8',md);
+  return true;
 }
-
 function autoDownloadIfPossible(){
   const paid = localStorage.getItem(LS_PAID)==='1';
   if (!paid) return;
+  // استخدم النتائج الحالية إن وُجدت، وإلا استخدم المحفوظة
   const list = (window.ALL_RESULTS && ALL_RESULTS.length) ? ALL_RESULTS : loadCachedResults();
   if (list && list.length){
-    tryAutoCSV(list);
-    showClaimBar(true);
+    doAutoDownloads(list);
+    localStorage.removeItem(LS_AUTODL);
   }else{
+    // ما في نتائج محفوظة حالياً: فعّل التحميل التلقائي بعد أول تحليل قادم
     localStorage.setItem(LS_AUTODL,'1');
   }
 }
@@ -620,7 +572,7 @@ function aggregateSmart(pages){
 
   const out=[];
   for (const [k, tf] of TF.entries()){
-    const df = tf; // لكل صفحة مرّة
+    const df = tf; // لأننا نزيد مرة لكل صفحة (مقاربة مبسطة)
     const idf = Math.log((N+1)/(df+1))+1;
     const hostCoverage = (HOSTS.get(k)||new Set()).size;
     const hostBoost = 1 + Math.min(0.30, 0.10 * (hostCoverage-1));
@@ -653,54 +605,44 @@ function escapeHTML(s){
 }
 
 function render(list){
-  const paid=(localStorage.getItem(LS_PAID)==='1');
-  $dlCSV.classList.toggle('hide',!paid);
+  const paid=(localStorage.getItem(LS_PAID)==='1'); 
+  $dlCSV.classList.toggle('hide',!paid); 
   $dlMD.classList.toggle('hide',!paid);
-  showClaimBar(paid);
 
   $found.textContent=`تم العثور على ${list.length} عبارة`;
   if ($kwTotal) $kwTotal.textContent = String(list.length);
 
-  const show=paid?list:list.slice(0,5);
+  const show=paid?list:list.slice(0,5); 
   $results.innerHTML='';
   for(const r of show){
-    const div=document.createElement('div');
+    const div=document.createElement('div'); 
     div.className='row';
     div.innerHTML=`
       <h3>${escapeHTML(r.keyword)}</h3>
-      <div class="urls">${(r.sample_urls||[]).map(u=>`<a class="link" href="${u}" target="_blank" rel="noopener">${u}</a>`).join('  ')}</div>
+      <div class="urls">${r.sample_urls.map(u=>`<a class="link" href="${u}" target="_blank" rel="noopener">${u}</a>`).join('  ')}</div>
     `;
     $results.appendChild(div);
   }
 }
 
-/* تنزيلات يدوية عند الضغط */
-$dlCSV.onclick=()=>{
-  if(localStorage.getItem(LS_PAID)!=='1') return;
-  const list = (ALL_RESULTS && ALL_RESULTS.length) ? ALL_RESULTS : loadCachedResults();
-  if(!list.length){ alert('لا توجد نتائج محفوظة بعد.'); return; }
-  const csv=toCSV(buildCSVRows(list));
-  download('competitors_keywords.csv','text/csv;charset=utf-8',csv);
-};
-$dlMD.onclick=()=>{
-  if(localStorage.getItem(LS_PAID)!=='1') return;
-  const list = (ALL_RESULTS && ALL_RESULTS.length) ? ALL_RESULTS : loadCachedResults();
-  if(!list.length){ alert('لا توجد نتائج محفوظة بعد.'); return; }
-  const md=buildMarkdown(list);
-  download('competitors_keywords.md','text/markdown;charset=utf-8',md);
-};
-
-/* زر الاستلام — مضمون بضغطه */
-if ($claimBtn){
-  $claimBtn.addEventListener('click', ()=>{
-    const paid = localStorage.getItem(LS_PAID)==='1';
-    if (!paid){ alert('يجب إتمام الدفع أولًا.'); return; }
-    const list = (ALL_RESULTS && ALL_RESULTS.length) ? ALL_RESULTS : loadCachedResults();
-    if(!list.length){ alert('لا توجد نتائج محفوظة بعد. قم بالتحليل أولًا.'); return; }
-    const csv=toCSV(buildCSVRows(list));
-    download('competitors_keywords.csv','text/csv;charset=utf-8',csv);
-  });
+/* CSV / MD */
+function buildCSVRows(items){
+  const header=['keyword','sample_urls'];
+  const rows=[header]; 
+  for(const r of items){ 
+    rows.push([r.keyword, r.sample_urls.join(' ')]);
+  }
+  return rows;
 }
+function buildMarkdown(items){
+  let md=`# قائمة الكلمات المستخرجة من عناوين الصفحات\n\n`;
+  for(const r of items){
+    md+=`- **${r.keyword}**\n`;
+  }
+  return md;
+}
+$dlCSV.onclick=()=>{ if(localStorage.getItem(LS_PAID)!=='1') return; const csv=toCSV(buildCSVRows(ALL_RESULTS)); download('competitors_title_keywords.csv','text/csv;charset=utf-8',csv); }
+$dlMD.onclick=()=>{ if(localStorage.getItem(LS_PAID)!=='1') return; const md=buildMarkdown(ALL_RESULTS); download('competitors_title_keywords.md','text/markdown;charset=utf-8',md); }
 
 /* ====================== السريان ====================== */
 function showDebug(obj){
@@ -760,8 +702,7 @@ $form.addEventListener('submit', async (e)=>{
 
     // لو العميل دفع قبل التحليل وفعّلنا التحميل التلقائي المؤجل
     if (localStorage.getItem(LS_PAID)==='1' && localStorage.getItem(LS_AUTODL)==='1'){
-      localStorage.removeItem(LS_AUTODL);
-      setTimeout(autoDownloadIfPossible, 300);
+      autoDownloadIfPossible();
     }
   }catch(err){
     showDebug({ reason:'top-level error', error:String(err) });
