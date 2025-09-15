@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>تم الدفع بنجاح</title>
+  <style>
+    body{font-family:system-ui,Arial;display:grid;place-items:center;height:100vh;margin:0;background:#f7f8fb;color:#0c1424}
+    .card{background:#fff;border:1px solid #e6e9f2;border-radius:14px;padding:24px;box-shadow:0 6px 16px rgba(0,0,0,.08);max-width:480px}
+    .btn{display:inline-block;margin-top:12px;padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,#2563eb,#8b5cf6);color:#fff;text-decoration:none;font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>شكرًا — تم الدفع بنجاح</h1>
+    <p>سيتم إعادتك للأداة لاستلام الملف تلقائيًا.</p>
+    <a id="go" class="btn" href="#">اذهب الآن</a>
+  </div>
+<script>
+  (function(){
+    try{ localStorage.setItem('ck_paid','1'); }catch(_){}
+    // ✳️ عدّل المسار لو أداةك في مجلد فرعي (مثال: /tool/)
+    var toolURL = (location.origin + '/').replace(/\/+$/,'/') + '?paid=1#autodl=1';
+    document.getElementById('go').href = toolURL;
+    setTimeout(function(){ location.replace(toolURL); }, 800);
+  })();
+</script>
+</body>
+</html>
