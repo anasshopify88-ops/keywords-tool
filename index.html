@@ -199,12 +199,6 @@
           <div class="cta" id="cta">
             <p>حمّل جميع الكلمات المفتاحية (<b><span id="kwTotal">0</span></b>) بـ 25 ريال سعودي فقط</p>
             <a class="btn primary" id="payBtn" target="_self" rel="noopener">انتقل إلى صفحة الدفع</a>
-            <!-- إدخال رقم الطلب + زر تحقق/تحميل -->
-            <div class="row" style="display:flex;gap:8px;width:100%">
-              <input type="text" id="orderRef" placeholder="أدخل رقم الطلب من سلة (reference id)">
-              <button type="button" class="btn" id="redeemBtn">تحقق وحمّل</button>
-            </div>
-            <div class="hint" id="redeemMsg"></div>
           </div>
         </div>
       </section>
@@ -216,7 +210,7 @@
 const WORKER_BASE = 'https://keywords-tool.anasshopify88.workers.dev';
 const MAX_COMPETITORS = 3;
 const CONCURRENCY = 4;
-const PAYMENT_LINK = 'https://anasrashed.com/';
+const PAYMENT_LINK = 'https://anasrashed.com/cart';
 
 const NGRAM_MIN = 2, NGRAM_MAX = 5;
 
@@ -228,8 +222,6 @@ const $progress = el('#progress'), $results = el('#results'), $found = el('#foun
 const $payBtn = el('#payBtn');
 const $backBtn = el('#backBtn');
 const $kpis = el('#kpis'); const $debugBox = el('#debugBox'); const $kwTotal = el('#kwTotal');
-/* عناصر التحقق بالطلب */
-const $orderRef = el('#orderRef'), $redeemBtn = el('#redeemBtn'), $redeemMsg = el('#redeemMsg');
 
 $backBtn.onclick = () => window.history.back();
 $payBtn.href = PAYMENT_LINK;
@@ -237,13 +229,6 @@ $payBtn.href = PAYMENT_LINK;
 /* ====================== أدوات مساعدة ====================== */
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 function uniq(arr){ return Array.from(new Set(arr)); }
-/* تنزيل ملف */
-function download(name, mime, data){
-  const blob = new Blob([data], {type: mime});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click();
-  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();}, 0);
-}
 
 /* ====================== قوائم لغوية/تنظيف ====================== */
 const AR_STOPWORDS = new Set(["في","وفي","على","من","عن","أن","إن","او","أو","إلى","الى","و","ثم","كما","كان","كانت","يكون","ما","لا","لم","لن","قد","هذه","هذا","هو","هي","هم","هن","ذلك","تلك","أين","أينما","كيف","متى","لما","أي","أيضا","ايضا","كل","حتى","مع","بعد","قبل","بين","أثناء","حيث","لدى","لدي","التي","الذي","الذين","اللذي","اللذين","ذات","نحو","أمام","خلف","فوق","تحت","داخل","خارج","بدون","غير","مثل","عند","إذ","اذ","إذا","اذا","لكن","بل","إنما","أيما","ام","أما","أم","به","بهذا","بها","بهم","ألا","الا","هنا","هناك","منذ","ضمن","جدا","لقد","تم","تمت","ربما","يمكن","لازال","لا","زال","لايزال","لا","يزال","الرئيسيه","الرئيسية","متجر","المتجر","التصنيفات","الاقسام","العروض","الخصومات","تسوق","الشراء","الطلب","دخول","تسجيل","خروج","حساب","حسابي","اتصل","تواصل","سياسة","الخصوصية","الشروط","الاحكام","الشحن","التوصيل","الدفع","استرجاع","استبدال","تتبع","سلة","عربة","مشتريات","مدونة","المدونة","ارشيف","الأرشيف","الصفحه","صفحة","رسمي","الرسمية"]);
@@ -609,43 +594,6 @@ $form.addEventListener('submit', async (e)=>{
   }catch(err){
     showDebug({ reason:'top-level error', error:String(err) });
     alert('حدث خطأ غير متوقع. راجع صندوق التشخيص أسفل النموذج.');
-  }
-});
-
-/* ====================== التحقق برقم الطلب وتنزيل الملف ====================== */
-$redeemBtn?.addEventListener('click', async ()=>{
-  if (!$orderRef) return;
-  $redeemMsg.textContent='';
-  const ref = ($orderRef.value||'').trim();
-  if(!ref){ $redeemMsg.textContent='أدخل رقم الطلب.'; return; }
-
-  // جهّز نفس المدخلات (المنافسين)
-  const inputs=[$c1.value,$c2.value,$c3.value].map(v=>v.trim()).filter(Boolean);
-  if(inputs.length===0){ $redeemMsg.textContent='أدخل منافسًا واحدًا على الأقل.'; return; }
-  const targets=[];
-  for(const v of inputs){
-    const can = canonicalizeInput(v);
-    if(!can){ $redeemMsg.textContent='تنسيق رابط غير صحيح.'; return; }
-    targets.push(can);
-  }
-
-  try{
-    $redeemMsg.textContent='جاري التحقق من الطلب وتنزيل الملف…';
-    const r = await fetch(WORKER_BASE + '/redeem?format=csv', {
-      method:'POST',
-      headers:{'content-type':'application/json'},
-      body: JSON.stringify({ order_ref: ref, competitors: targets })
-    });
-    if(r.ok){
-      const csv = await r.text();
-      download('competitors_keywords.csv','text/csv;charset=utf-8', csv);
-      $redeemMsg.textContent='تم التحقق من الطلب وتنزيل الملف.';
-    }else{
-      const j = await r.json().catch(()=>({error:'unknown'}));
-      $redeemMsg.textContent = 'فشل التحقق: ' + (j.error||('HTTP '+r.status));
-    }
-  }catch(e){
-    $redeemMsg.textContent='خطأ في الاتصال بالخادم.';
   }
 });
 </script>
